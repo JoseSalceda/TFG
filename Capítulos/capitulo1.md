@@ -140,7 +140,7 @@ Por último, la selección de Amazon Bedrock como infraestructura base responde 
 
 [3] Ternary (2024). AI Cloud FinOps. Plataforma de gestión financiera que ilustra las capacidades SaaS de terceros para la optimización de los gastos en la nube y modelos de IA. Disponible en: https://ternary.app/
 
-[4] CloudZero (2025). The AI Cost Crisis: What AI Cost Sprawl Is And How To Fix It. Reporte sobre el crecimiento del gasto en inferencia y la necesidad de optimización autónoma. Disponible en: https://www.cloudzero.com/blog/ai-cost-sprawl
+[4] CloudZero (2025). The AI Cost Crisis: What AI Cost Sprawl Is And How To Fix It. Reporte sobre el crecimiento del gasto en inferencia y la necesidad de optimización autónoma. Disponible en: https://www.cloudzero.com/blog/ai-cost-crisis/
 
 [5] https://www.gartner.com/en/newsroom/press-releases/2025-08-26-gartner-predicts-40-percent-of-enterprise-apps-will-feature-task-specific-ai-agents-by-2026-up-from-less-than-5-percent-in-2025
 
