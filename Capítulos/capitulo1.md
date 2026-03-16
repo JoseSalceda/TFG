@@ -8,7 +8,7 @@ Este TFG busca diseñar e implementar una arquitectura middleware para la gesti�
 
 Muchas organizaciones, incluso las mas grandes, siguen sin tener claro como adoptar una IA que avanza tan rápido que cuesta mantenerse al día con sus avances. Estas empresas saben de la utilidad de la IA y como usarla de forma correcta puede hacerla una herramienta valiosisima para su negocio. Uno de los muchos desafios, y es al que me dedico yo, es la gestión de costes. Las empresas se mueven para ganar dinero, por lo que optimizar cada euro es clave. El problema es que el dinero de las empresas se esfuma por cualquier lugar y saber entender donde se gasta, como se gasta, si es un coste que vale la pena y mucho más no es fácil [1]. En el ambito de la IA y  la nube, los costes asociados a las peticiones de LLMs y el despliegue de agentes (infraestructura, bases de datos vectoriales y tokens) suelen comportarse como una caja negra, generando gastos imprevistos. Las principales plataformas cloud (AWS, GCP, Azure) ofrecen herramientas para gestionar los costes, pero suelen carecer de una visibilidad granular casi en tiempo real a nivel de interacciones y "tokens" consumidos (el nivel micro de los LLMs). En este contexto, la disciplina corporativa de FinOps aplicada a la Inteligencia Artificial (a menudo denominada GenOps o LLMOps Financial Management) se convierte en una necesidad inmediata, ya que la rentabilidad y el control del gasto son pilares fundamentales para la existencia y sostenibilidad de cualquier empresa.
 
-## Solución propuesta (Se explicara en detalle en el capítulo 4)
+## Solución propuesta (Se explicara en detalle mas abajo)
 
 Para dar respuesta a esta problemática, el presente TFG propone el diseño y desarrollo de varias "Misiones FinOps" integradas dentro del ecosistema de agentes virtuales de Theia Craft para las empresas que trabajen con nosotros. En lugar de depender de paneles de control estáticos (dashboards) que requieren la revisión manual de un ingeniero, la solución consiste en dotar a un Agente de IA de herramientas (Action Groups) que le permitan interactuar directamente con las APIs de facturación y monitorización de la nube (específicamente Amazon Web Services - AWS para este TFG).
 Las misiones FinOps que se pronpodrán a lo largo de este TFG serán variadas. Las mas generales serán de visibilidad de costes, ya que sin visión del saldo y gasto de una empresa no se puede hacer nada. Las misiones específicas serán de optimización de costes, buscando, una vez se tenga una visión clara de donde se gasta el dinero, darle la visibilidad necesaria al negocio para que pueda redirigir sus gastos de manera correcta. 
@@ -89,6 +89,7 @@ Es la mas hermetica de las 3 opciones y ademas los requisitos de acceso a ella s
 
 Las 3 plataformas cloud mencionadas son las 3 grandes de la industria, cada una con sus ventajas y desventajas. De las 3, en Theia Craft actulamente estamos centrados en 2, AWS y GCP. En este TFG, AWS será la plataforma que se utilizará para desplegar la solución propuesta, ya que llevo varios meses usando ambas y AWS me ha parecido mas responsiva y con mayor numero de herramientas para el control de costes cloud. Obviamente, es posible que con el paso del tiempo o gracias a alguna opción concreta GCP sea realmente mejor pero finalmente se usara AWS.
 
+### Tabla 1. Comparativa de características FinOps.
 
 | Característica FinOps (GenOps) | AWS | GCP | Azure |
 | :--- | :--- | :--- | :--- |
@@ -115,21 +116,54 @@ Esta integración responde además a una necesidad estricta de trazabilidad. Las
 Por último, la selección de Amazon Bedrock como infraestructura base responde a los requisitos de seguridad y al contexto tecnológico de Theia Craft. Aunque el mercado ofrece frameworks de orquestación alternativos de código abierto (como LangChain o LangGraph) que podrían alojarse en servidores propios, Bedrock proporciona capacidades nativas como el Model Invocation Logging y los perfiles de inferencia cruzados con AWS IAM. Esto permite que la arquitectura herede los estándares de seguridad corporativa (Zero Trust), garantizando que el agente accede a los datos de facturación bajo el principio de mínimo privilegio [11]. Esta suma de capacidades nativas e integración segura hace de AWS el entorno tecnológico idóneo para el desarrollo de la propuesta.
 
 
-## Solución propuesta
+## 2.2 Solución propuesta
+
+Este primer capitulo se centra en dejar claro el contexto técnico de la propuesta. Es muy probable que en el futuro, al igual que ya ha sucedido desde las anteriores entregas, haya cambios en la arquitectura, solución o ambito.
+
+La solución propuesta actual es un "Pipeline de FinOps & Gobernanza" embebido en el producto de Theia Craft. Técnicamente constará de:
+
+- Un modelo de datos unificado para representar "Misiones" e "Introspección de Sistemas", agnosticizando las complicaciones técnicas ligadas a la nube específica (AWS, GCP).
+- Un flujo de usuario (UI) interactivo híbrido, donde el sistema realiza acciones en la nube (auto-detectar, auto-habilitar) cuando tiene permisos suficientes (workerCanDoIt), pero ofrece instrucciones granulares e inserciones de código "en vivo" cuando la configuración requiere seguridad o derechos exclusivos del cliente humano administrador.
+- Conexión de arquitecturas sin servidor (Serverless), como AWS Lambda, orquestadas y desplegadas bajo la instrucción del middleware para actuar como recolectores locales de datos de costes, superando las limitaciones nativas de exportación de ciertas sub-herramientas cloud.
 
 
-## Objetivos
+## 2.3 Objetivos
+
+Para dar respuesta a la problemática planteada y estructurar el desarrollo de la solución, se han definido un objetivo general y una serie de objetivos específicos que guiarán las distintas fases del proyecto.
 
 ### Objetivo general
 
+Diseñar, desarrollar y validar un módulo de gestión financiera en la nube (Misión FinOps) basado en Inteligencia Artificial Agéntica para su integración en la plataforma corporativa Theia Officer de Theia Craft. Esta arquitectura middleware, desplegada sobre los servicios de Amazon Web Services (AWS), tiene como fin principal proporcionar a las organizaciones visibilidad financiera granular, prevenir sobrecostes y automatizar la optimización del gasto derivado del uso de Modelos de Lenguaje Grande (LLMs).
+
 ### Objetivos específicos
 
+Para alcanzar el objetivo general propuesto, el proyecto se desglosa en los siguientes objetivos específicos, los cuales se encuentran directamente mapeados con las fases de ingeniería del software y los capítulos de este documento:
 
-## Estructura del trabajo
+1. Definir la disciplina de requisitos y elaborar el modelo de dominio del sistema
+2. Definir la disciplina de análisis y diseño arquitectónico que conduzca a cumplir con el objetivo general, definiendo la infraestructura en la nube (AWS), las integraciones de red y la orquestación de los agentes de IA necesarios para que el flujo funcione de manera óptima.
+3. Desarrollar una primera iteración en forma de Producto Mínimo Viable (MVP) de la "Misión FinOps", que responda fielmente a los requisitos, análisis y diseño realizados en las fases anteriores.
+4. Evaluar el prototipo, validando la exactitud de la extracción de costes en un entorno controlado y analizando el valor aportado a la toma de decisiones empresariales.
+
+
+## 2.4 Estructura del trabajo
 
 ### Metodología
 
+Debido a la naturaleza del proyecto y a su integración directa dentro del entorno corporativo de Theia Craft, el desarrollo se rige por una metodología ágil, tomando como referencia el marco de trabajo Scrum adaptado a un contexto de investigación y desarrollo (I+D).
 
+Este enfoque iterativo e incremental es fundamental para un ecosistema de IA que evoluciona rápidamente, permitiendo adaptar la arquitectura ante posibles actualizaciones en las APIs de los proveedores Cloud o en el comportamiento de los LLMs. 
+
+### Estructura del Trabajo
+
+El presente Trabajo de Fin de Grado busca que se refleje el ciclo de vida del desarrollo del software y la investigación aplicada, que, mediante la metodología Scrum, se articula en las siguientes fases:
+
+1. Investigación y Toma de Requisitos
+2. Diseño y Modelado
+3. Implementación Iterativa (Sprints)
+4. Validación y Pruebas Continuas
+5. Revisión y Despliegue
+
+Esta estructura metodológica asegura no solo el cumplimiento de los objetivos académicos del TFG, sino también la viabilidad y mantenibilidad de la solución técnica en el entorno productivo real de la empresa.
 
 
 # 7. Bibliografía
@@ -142,7 +176,7 @@ Por último, la selección de Amazon Bedrock como infraestructura base responde 
 
 [4] CloudZero (2025). The AI Cost Crisis: What AI Cost Sprawl Is And How To Fix It. Reporte sobre el crecimiento del gasto en inferencia y la necesidad de optimización autónoma. Disponible en: https://www.cloudzero.com/blog/ai-cost-crisis/
 
-[5] https://www.gartner.com/en/newsroom/press-releases/2025-08-26-gartner-predicts-40-percent-of-enterprise-apps-will-feature-task-specific-ai-agents-by-2026-up-from-less-than-5-percent-in-2025
+[5] Gartner (2025). Gartner Predicts 40 Percent of Enterprise Apps Will Feature Task-Specific AI Agents by 2026, Up from Less Than 5 Percent in 2025. Reporte sobre la predicción de la adopción de agentes de IA en aplicaciones empresariales. Disponible en: https://www.gartner.com/en/newsroom/press-releases/2025-08-26-gartner-predicts-40-percent-of-enterprise-apps-will-feature-task-specific-ai-agents-by-2026-up-from-less-than-5-percent-in-2025
 
 [6] Anthropic (2024). Prompt caching with Claude. Documentación oficial sobre la reducción de latencia y la disminución de costes (hasta un 90%) al cachear tokens de contexto largos en interacciones repetitivas. Disponible en: https://www.anthropic.com/news/prompt-caching 
 
