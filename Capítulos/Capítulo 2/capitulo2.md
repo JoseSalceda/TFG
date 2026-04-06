@@ -216,3 +216,161 @@ AWS es un actor externo que no inicia ninguna interacción: responde a las llama
 | Diagrama | Código Fuente |
 | :--- | :--- |
 | ![CU AWS](./CdU/AWS/AWS.svg) | [Ver código PlantUML](./CdU/AWS/AWS.puml) |
+
+## 4.6 Diagrama de contexto de las nuevas misiones
+
+Este es el diagrama más útil para entender cómo encajan los casos de uso en el tiempo. Mientras los diagramas de la sección anterior muestran qué puede hacer cada actor, este muestra cuándo: los estados por los que pasa el sistema desde que un usuario se autentica hasta que el ciclo de optimización está activo. El punto de entrada es CU-04 (autenticación), tras el cual CU-01 y CU-02 configuran la plataforma base. Solo entonces es posible activar el dashboard (CU-07) y, a partir de ahí, la monitorización continua y la optimización. Una vez en marcha, el ciclo se retroalimenta periódicamente gracias al Actor Tiempo.
+
+| Diagrama | Código Fuente |
+| :--- | :--- |
+| ![Diagrama de Contexto](./CdU/DiagramaContexto/Contexto.svg) | [Ver código PlantUML](./CdU/DiagramaContexto/Contexto.puml) |
+
+## 4.7 Detalle de las nuevas misiones Must y Should (CU-07 a CU-11)
+
+### CU-07 — Dashboard consolidado de costes IA
+
+| Campo | Detalle |
+| :--- | :--- |
+| **Actor principal** | Administrador / Usuario Regular |
+| **Actores secundarios** | — |
+| **Precondiciones** | Existen Datos de Facturación disponibles en el sistema. |
+| **Postcondiciones** | El usuario visualiza KPIs consolidados de gasto IA, desglose por agente y modelo, y evolución temporal del gasto. |
+
+**Camino básico:**
+1. El usuario accede al dashboard de costes IA.
+2. El sistema agrega los Datos de Facturación del periodo seleccionado por proveedor, agente y modelo.
+3. El sistema calcula los KPIs principales: coste total, agente más costoso, modelo más utilizado y variación respecto al periodo anterior.
+4. El sistema presenta los KPIs, la tabla de desglose y la gráfica de evolución temporal.
+5. El usuario puede filtrar por agente, modelo o rango de fechas y los datos presentados se ajustan a la selección.
+
+**Caminos alternativos:**
+- **2a.** No existen datos para el periodo seleccionado: el dashboard muestra los KPIs a cero y sugiere ejecutar una sincronización de facturación.
+- **2b.** Solo existe un proveedor con datos: el desglose por proveedor se omite y se muestra directamente el desglose por agente.
+
+---
+
+### CU-08 — Detectar y alertar anomalías de gasto
+
+| Campo | Detalle |
+| :--- | :--- |
+| **Actor principal** | CAIO Virtual / Actor Tiempo |
+| **Actores secundarios** | Administrador |
+| **Precondiciones** | Existen Datos de Facturación de al menos dos semanas para calcular una media histórica significativa. |
+| **Postcondiciones** | Las anomalías detectadas quedan registradas. El administrador recibe una notificación con el agente afectado, el gasto observado y la desviación respecto a la media. |
+
+**Camino básico:**
+1. El Actor Tiempo dispara el análisis periódico de anomalías.
+2. El CAIO Virtual calcula la media y la desviación típica de gasto por agente para el histórico disponible.
+3. Para cada agente, compara el gasto del periodo reciente con el umbral estadístico calculado.
+4. Si un agente supera el umbral, genera una alerta con el agente afectado, el importe observado y la desviación porcentual.
+5. La alerta queda registrada en el Registro de Auditoría y se notifica al administrador.
+
+**Caminos alternativos:**
+- **2a.** Histórico insuficiente para calcular la media: el sistema omite el análisis y registra que no hay suficientes datos, sin generar alertas falsas.
+- **4a.** No se detecta ninguna anomalía: el análisis concluye sin notificaciones.
+
+---
+
+### CU-09 — Analizar eficiencia de agentes
+
+| Campo | Detalle |
+| :--- | :--- |
+| **Actor principal** | CAIO Virtual |
+| **Actores secundarios** | Administrador |
+| **Precondiciones** | Existen Datos de Facturación sincronizados y Registros de Uso de LLM asociados a los agentes. |
+| **Postcondiciones** | Se genera un ranking de agentes ordenado por ratio coste/uso. Los agentes con ratio elevado quedan marcados como candidatos a optimización. |
+
+**Camino básico:**
+1. El CAIO Virtual analiza la relación entre el coste y el volumen de uso de cada agente.
+2. Calcula el ratio coste/uso para cada agente del periodo analizado.
+3. Ordena los agentes de mayor a menor ratio y clasifica como candidatos a optimización los que superen el umbral configurado.
+4. Genera el informe de eficiencia y lo presenta al administrador con recomendaciones concretas.
+
+**Caminos alternativos:**
+- **1a.** No existen Registros de Uso de LLM para un agente: ese agente se excluye del ranking y se indica la ausencia de datos de uso.
+
+---
+
+### CU-10 — Visibilidad del coste LLM de la plataforma
+
+| Campo | Detalle |
+| :--- | :--- |
+| **Actor principal** | Administrador / Usuario Regular |
+| **Actores secundarios** | — |
+| **Precondiciones** | Existen Registros de Uso de LLM de la propia plataforma. |
+| **Postcondiciones** | El usuario visualiza cuánto cuesta operar el CAIO Virtual: desglose por funcionalidad, proveedor LLM y periodo. |
+
+**Camino básico:**
+1. El usuario accede a la sección de costes de plataforma.
+2. El sistema agrega los Registros de Uso de LLM por funcionalidad (análisis, conversación, misiones) y proveedor.
+3. Calcula el coste total de gobernanza IA y el desglose por componente.
+4. Presenta los datos junto con el coste de los agentes del cliente, permitiendo comparar el coste de gobernar la IA con el coste de ejecutarla.
+
+**Caminos alternativos:**
+- **2a.** No existen registros de uso: el sistema muestra el módulo vacío e indica que aún no se han generado costes de plataforma.
+
+---
+
+### CU-11 — Recomendar optimización de modelo
+
+| Campo | Detalle |
+| :--- | :--- |
+| **Actor principal** | CAIO Virtual |
+| **Actores secundarios** | Administrador |
+| **Precondiciones** | Existen Registros de Uso de LLM con suficiente histórico para identificar patrones de uso por funcionalidad. |
+| **Postcondiciones** | Se generan recomendaciones concretas de cambio de modelo para las funcionalidades donde el análisis detecta que un modelo más económico podría cumplir la misma función. |
+
+**Camino básico:**
+1. El CAIO Virtual analiza los patrones de uso de cada configuración LLM por funcionalidad y periodo.
+2. Identifica funcionalidades donde el coste por tarea es elevado en relación con la complejidad observada.
+3. Compara las opciones de modelo disponibles para esas funcionalidades según coste y capacidades.
+4. Genera recomendaciones ordenadas por ahorro potencial estimado y las presenta al administrador.
+
+**Caminos alternativos:**
+- **2a.** El análisis no detecta oportunidades de ahorro significativas: el sistema informa que la configuración actual es eficiente para los patrones de uso observados.
+
+---
+
+## 4.8 Trazabilidad Casos de Uso × Pantalla × API
+
+Los CU-01 a CU-06 corresponden a endpoints ya implementados en la plataforma base. Los CU-07 a CU-15 son los endpoints que se diseñarán e implementarán en este TFG.
+
+| Caso de Uso | Pantalla | Endpoint API |
+| :--- | :--- | :--- |
+| CU-01 Registrar credenciales AWS | `/credentials` | `POST /credentials` |
+| CU-02 Descubrir agentes | `/credentials` | `POST /sync` |
+| CU-03 Gestionar permisos IAM | `/missions` (hitos) | `POST /autonomous-missions/{id}/attach-roles` |
+| CU-04 Autenticarse | `/login` | `POST /auth/login` + `POST /auth/verify` |
+| CU-05 Configurar LLM | `/settings/ai` | `POST /llm/configure` |
+| CU-06 Auditoría de actividad | `/activity` | `GET /audit-logs` |
+| CU-07 Dashboard consolidado | `/costs/dashboard` | `GET /billing/dashboard` |
+| CU-08 Detectar anomalías | `/missions` (hitos) | `GET /billing/anomalies` |
+| CU-09 Analizar eficiencia | `/missions` (hitos) | `GET /billing/efficiency` |
+| CU-10 Visibilidad coste LLM | `/costs/platform` | `GET /llm/costs` |
+| CU-11 Recomendar optimización | `/missions` (hitos) | `GET /llm/optimization` |
+| CU-12 Proyectar tendencia | `/costs/dashboard` | `GET /billing/projection` |
+| CU-13 Configurar alertas | `/settings/alerts` | `POST /billing/alerts` |
+| CU-14 Informe de consumo IA | `/reports` | `GET /reports/consumption` |
+| CU-15 Consolidación de agentes | `/agents` | `GET /agents/consolidation` |
+
+## 4.9 Marco de Decisiones Estratégicas FinOps (F1–F11)
+
+El framework de gobernanza propio de Theia Officer organiza el control financiero de la IA en once preguntas estratégicas que el CAIO Virtual evalúa para cada organización. Cada decisión se mapea a misiones concretas del catálogo.
+
+| Decisión | Pregunta estratégica | Misión asociada |
+| :--- | :--- | :--- |
+| **F1** | ¿Cuánto cuesta cada agente de IA al mes? | CU-07 |
+| **F2** | ¿Hay agentes que gastan mucho pero se usan poco? | CU-09 |
+| **F3** | ¿Existe una vista consolidada de todos los costes de IA? | CU-07 |
+| **F4** | ¿Hay alertas que avisen antes de una factura inesperada? | CU-08 + CU-13 |
+| **F5** | ¿Se usan modelos premium para tareas que un modelo más barato resolvería igual? | CU-11 |
+| **F6** | ¿Existen dos o más agentes que hacen exactamente lo mismo? | CU-15 *(posible futuro)* |
+| **F7** | ¿Las mismas fuentes de datos están cargadas en múltiples agentes innecesariamente? | CU-15 *(posible futuro)* |
+| **F8** | ¿Podría consolidarse el catálogo de agentes en un número menor más optimizado? | CU-15 *(posible futuro)* |
+| **F9** | ¿Existe un presupuesto de IA asignado por equipo o departamento? | CU-13 |
+| **F10** | ¿Cómo evolucionará el gasto de IA en los próximos meses? | CU-12 |
+| **F11** | ¿Recibe la dirección informes periódicos del consumo de IA? | CU-14 *(posible futuro)* |
+
+Las misiones marcadas como *(posible futuro)* representan trabajo identificado para iteraciones posteriores. Su implementación no está garantizada en el alcance de este TFG.
+
+> **Nota:** F1 y F3 se mapean ambas a CU-07 de forma deliberada. El dashboard consolidado es la vista central única que responde simultáneamente a "¿cuánto cuesta cada agente?" (F1) y "¿existe una vista unificada de todos los costes?" (F3): no son misiones separadas, sino dos perspectivas de la misma necesidad.

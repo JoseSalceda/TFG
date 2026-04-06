@@ -1,0 +1,18 @@
+@startuml Contexto
+hide empty description
+
+[*] --> Autenticado : CU-04 Autenticarse
+
+Autenticado --> PlataformaConfigurada : CU-01 Registrar credenciales AWS\nCU-02 Descubrir agentes\nCU-05 Configurar LLM
+
+PlataformaConfigurada --> VisibilidadActiva : CU-07 Dashboard consolidado
+
+VisibilidadActiva --> MonitorizacionActiva : CU-08 Detectar anomalias\nCU-13 Configurar alertas
+
+MonitorizacionActiva --> OptimizacionDisponible : CU-09 Analizar eficiencia\nCU-10 Visibilidad coste LLM\nCU-11 Recomendar optimizacion
+
+OptimizacionDisponible --> VisibilidadActiva : Actor Tiempo sincroniza periodicamente
+
+OptimizacionDisponible --> [*] : Sesion finalizada
+
+@enduml
