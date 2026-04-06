@@ -1,0 +1,18 @@
+@startuml AgenteBedrock
+hide empty description
+
+[*] --> creating : CREATING (Bedrock)
+
+creating --> active : PREPARED (Bedrock)
+creating --> failed : Error en creacion
+
+active --> inactive : NOT_PREPARED (Bedrock)
+inactive --> active : Agente re-preparado
+
+active --> removed : Eliminado del proveedor
+inactive --> removed : Eliminado del proveedor
+failed --> removed : Eliminado del proveedor
+
+removed --> [*]
+
+@enduml

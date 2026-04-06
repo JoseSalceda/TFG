@@ -1,0 +1,110 @@
+@startuml MdD
+hide circle
+hide empty members
+skinparam linetype polyline
+skinparam packageStyle rectangle
+skinparam nodesep 60
+skinparam ranksep 80
+
+class Organizacion {
+  nombre
+  industria
+  tamano
+  mercado_principal
+  tolerancia_riesgo
+}
+
+class Usuario {
+  email
+  nombre
+  rol
+  es_admin: bool
+}
+
+class CredencialAWS {
+  nombre
+  proveedor: aws
+  region
+  valida: bool
+  ultima_verificacion
+}
+
+class AgenteIA {
+  nombre
+  tipo: bedrock-agent
+  estado
+  region
+  modelo_fundacional
+  rol_ARN
+  endpoint
+}
+
+class MisionFinOps {
+  tipo_mision
+  estado
+  ciclo_vida
+  intervalo_sync_horas
+  tipos_alerta
+  canales_notificacion
+  ultimo_sync
+}
+
+class EventoPermiso {
+  accion
+  rol_IAM
+  tipo_permiso
+  confirmado_usuario: bool
+  accion_automatica: bool
+}
+
+class DatoFacturacion {
+  recurso_id
+  periodo_inicio
+  periodo_fin
+  coste
+  moneda
+  servicio: Amazon Bedrock
+  tipo_uso
+}
+
+class RegistroUsoLLM {
+  proveedor
+  modelo
+  tokens_entrada
+  tokens_salida
+  coste_usd
+  fuente
+}
+
+class ConfiguracionLLM {
+  proveedor
+  modelo
+  endpoint
+  clave_cifrada
+  rol_asignado
+}
+
+class RegistroAuditoria {
+  accion
+  tipo_recurso
+  recurso_id
+  detalles
+}
+
+Organizacion "1" --> "0..*" Usuario : contiene
+Organizacion "1" --> "0..*" CredencialAWS : posee
+Organizacion "1" --> "0..*" MisionFinOps : lanza
+Organizacion "1" --> "0..*" ConfiguracionLLM : configura
+Organizacion "1" --> "0..*" RegistroUsoLLM : acumula
+Organizacion "1" --> "0..*" RegistroAuditoria : registra
+
+CredencialAWS "1" --> "0..*" AgenteIA : descubre
+CredencialAWS "1" --> "0..*" MisionFinOps : autoriza
+
+MisionFinOps "1" --> "0..*" EventoPermiso : genera
+
+AgenteIA "1" --> "0..*" DatoFacturacion : tiene
+
+ConfiguracionLLM "1" --> "0..*" RegistroUsoLLM : genera
+
+@enduml

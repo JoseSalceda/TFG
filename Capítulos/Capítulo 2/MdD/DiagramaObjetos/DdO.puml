@@ -1,0 +1,97 @@
+@startuml DdO
+hide circle
+hide empty members
+skinparam linetype polyline
+
+object "org1 : Organizacion" as org1 {
+  nombre = "Empresa_A"
+  industria = "tecnologia"
+  tamano = "mediana"
+}
+
+object "admin1 : Usuario" as admin1 {
+  email = "admin@empresa-a.com"
+  es_admin = true
+}
+
+object "cred1 : CredencialAWS" as cred1 {
+  region = "us-east-1"
+  valida = true
+  ultima_verificacion = "2026-04-01"
+}
+
+object "agent1 : AgenteIA" as agent1 {
+  nombre = "agente-soporte"
+  tipo = "bedrock-agent"
+  estado = "active"
+  modelo = "anthropic.claude-3-5-sonnet"
+}
+
+object "agent2 : AgenteIA" as agent2 {
+  nombre = "agente-analisis"
+  tipo = "bedrock-agent"
+  estado = "active"
+  modelo = "anthropic.claude-3-haiku"
+}
+
+object "mission1 : MisionFinOps" as mission1 {
+  tipo = "cost-tracking-aws"
+  estado = "monitoring"
+  ciclo_vida = "ongoing"
+  intervalo_sync = "24h"
+}
+
+object "billing1 : DatoFacturacion" as billing1 {
+  recurso_id = "agent-id-001"
+  coste = 45.30
+  moneda = "USD"
+  periodo = "2026-03-01 / 2026-03-31"
+}
+
+object "billing2 : DatoFacturacion" as billing2 {
+  recurso_id = "agent-id-002"
+  coste = 12.80
+  moneda = "USD"
+  periodo = "2026-03-01 / 2026-03-31"
+}
+
+object "llmLog1 : RegistroUsoLLM" as llmLog1 {
+  proveedor = "anthropic"
+  tokens_entrada = 5200
+  tokens_salida = 1800
+  coste_usd = 0.042
+  fuente = "caio_chat"
+}
+
+object "config1 : ConfiguracionLLM" as config1 {
+  proveedor = "anthropic"
+  modelo = "claude-3-5-sonnet"
+  rol_asignado = "razonamiento"
+}
+
+object "audit1 : RegistroAuditoria" as audit1 {
+  accion = "mission_created"
+  tipo_recurso = "MisionFinOps"
+  recurso_id = "mission-001"
+}
+
+object "evento1 : EventoPermiso" as evento1 {
+  accion = "attach"
+  rol_IAM = "BedrockReadOnly"
+  accion_automatica = true
+}
+
+org1 --> admin1
+org1 --> cred1
+org1 --> mission1
+org1 --> llmLog1
+org1 --> config1
+org1 --> audit1
+cred1 --> agent1
+cred1 --> agent2
+cred1 --> mission1
+agent1 --> billing1
+agent2 --> billing2
+mission1 --> evento1
+
+@enduml

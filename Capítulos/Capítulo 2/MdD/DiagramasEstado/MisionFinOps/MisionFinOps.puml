@@ -1,0 +1,24 @@
+@startuml MisionFinOps
+hide empty description
+
+[*] --> pending : Mision creada
+
+pending --> in_progress : Roles IAM adjuntados
+
+in_progress --> partial_complete : Algunos proyectos completados
+in_progress --> complete : Todos los proyectos completados (quick)
+in_progress --> failed : Error irrecuperable
+in_progress --> rolled_back : Rollback manual
+
+partial_complete --> waiting_reduction : Roles mission reducidos
+complete --> waiting_reduction : Roles mission reducidos
+
+waiting_reduction --> monitoring : Mision ongoing activada
+monitoring --> degraded : Health check fallido
+degraded --> monitoring : Health check recuperado
+
+failed --> [*]
+rolled_back --> [*]
+monitoring --> [*] : Mision cancelada
+
+@enduml
