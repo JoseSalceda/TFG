@@ -1,0 +1,15 @@
+@startuml AWS
+left to right direction
+skinparam packageStyle rectangle
+
+actor "AWS" as AWS
+
+rectangle "Plataforma base (Theia Craft)" {
+  usecase "CU-02\nDescubrir agentes en AWS" as CU02
+  usecase "CU-03\nGestionar permisos IAM" as CU03
+}
+
+AWS --> CU02
+AWS --> CU03
+
+@enduml

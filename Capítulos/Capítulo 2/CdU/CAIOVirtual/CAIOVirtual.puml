@@ -1,0 +1,25 @@
+@startuml CAIOVirtual
+left to right direction
+skinparam packageStyle rectangle
+
+actor "CAIO Virtual" as CAIO
+
+rectangle "Sistema Theia Officer - Modulo FinOps AWS" {
+  rectangle "Plataforma base (Theia Craft)" {
+    usecase "CU-03\nGestionar permisos IAM" as CU03
+  }
+  rectangle "Nuevas misiones FinOps (TFG)" {
+    usecase "CU-08\nDetectar anomalias de gasto" as CU08
+    usecase "CU-09\nAnalizar eficiencia de agentes" as CU09
+    usecase "CU-11\nRecomendar optimizacion de modelo" as CU11
+    usecase "CU-15\nConsolidacion de agentes" as CU15
+  }
+}
+
+CAIO --> CU03
+CAIO --> CU08
+CAIO --> CU09
+CAIO --> CU11
+CAIO --> CU15
+
+@enduml

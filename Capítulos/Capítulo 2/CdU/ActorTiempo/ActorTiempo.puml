@@ -1,0 +1,21 @@
+@startuml ActorTiempo
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Actor Tiempo" as Tiempo
+
+rectangle "Sistema Theia Officer - Modulo FinOps AWS" {
+  rectangle "Plataforma base (Theia Craft)" {
+    usecase "CU-02\nDescubrir agentes en AWS" as CU02
+    usecase "CU-03\nGestionar permisos IAM" as CU03
+  }
+  rectangle "Nuevas misiones FinOps (TFG)" {
+    usecase "CU-08\nDetectar anomalias de gasto" as CU08
+  }
+}
+
+Tiempo --> CU02
+Tiempo --> CU03
+Tiempo --> CU08
+
+@enduml

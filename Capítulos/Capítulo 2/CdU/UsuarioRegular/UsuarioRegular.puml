@@ -1,0 +1,23 @@
+@startuml UsuarioRegular
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Usuario Regular" as Regular
+
+rectangle "Sistema Theia Officer - Modulo FinOps AWS" {
+  rectangle "Plataforma base (Theia Craft)" {
+    usecase "CU-04\nAutenticarse" as CU04
+  }
+  rectangle "Nuevas misiones FinOps (TFG)" {
+    usecase "CU-07\nDashboard consolidado de costes IA" as CU07
+    usecase "CU-10\nVisibilidad coste LLM plataforma" as CU10
+    usecase "CU-12\nProyectar tendencia de costes" as CU12
+  }
+}
+
+Regular --> CU04
+Regular --> CU07
+Regular --> CU10
+Regular --> CU12
+
+@enduml
