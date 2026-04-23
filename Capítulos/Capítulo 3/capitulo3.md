@@ -148,3 +148,77 @@ La siguiente tabla no afirma que todos los endpoints estén implementados. Defin
 | CU-11 Recomendaciones | Proceso CAIO | `GET /llm/optimization` | `LLMUsageLog`, configuración LLM |
 | CU-12 Proyección | Dashboard / informe | `GET /billing/projection` | `BillingData` |
 | CU-13 Alertas | Configuración | `POST /billing/alerts` | configuración de umbrales |
+
+## 5.4 Análisis de clases
+
+### 5.4.1 Identificación de clases Modelo, Vista y Controlador
+
+Siguiendo la guía del capítulo 3, las clases de análisis se derivan del modelo de dominio y de los casos de uso. Se separan en Modelo, Vista y Controlador.
+
+### 5.4.2 Clases modelo
+
+| Clase | Origen | Responsabilidad |
+|-------|--------|-----------------|
+| `Organization` | Plataforma base | Aislar datos por cliente |
+| `Credential` | Plataforma base | Representar credenciales cloud cifradas |
+| `Agent` | Plataforma base | Representar agentes IA descubiertos |
+| `BillingData` | TFG | Registrar coste por recurso, periodo y proveedor |
+| `LLMUsageLog` | Plataforma base | Registrar coste de llamadas LLM del CAIO |
+| `AuditLog` | Plataforma base | Registrar operaciones relevantes |
+
+No se añaden clases específicas para los casos que no forman parte del núcleo visualizado. CU-08 y
+CU-13 se mantienen como evolución del módulo, pero no necesitan ampliar este diagrama de análisis.
+
+### 5.4.3 Clases vista
+
+| Clase vista | Actor | Casos de uso |
+|-------------|-------|--------------|
+| `CostsDashboardView` | Administrador / Usuario Regular | CU-07, CU-12 |
+| `CostKPIView` | Administrador / Usuario Regular | CU-07 |
+| `CostTrendView` | Administrador / Usuario Regular | CU-07, CU-12 |
+| `AgentCostTableView` | Administrador / Usuario Regular | CU-07, CU-09 |
+| `CostInsightsView` | Administrador / Usuario Regular | CU-07, CU-11 |
+
+### 5.4.4 Clases controlador
+
+| Clase controlador | Casos de uso | Responsabilidad |
+|-------------------|--------------|-----------------|
+| `BillingDashboardController` | CU-07 | Coordinar consulta y agregación de costes |
+| `BillingSyncController` | CU-07 | Coordinar sincronización con AWS Cost Explorer |
+| `CostInsightsController` | CU-07, CU-11 | Preparar datos agregados para el CAIO |
+
+En el diseño técnico estas clases pueden materializarse como routers, servicios, hooks o tareas programadas. En análisis representan responsabilidades, no necesariamente clases físicas uno a uno.
+
+### 5.4.5 Diagrama de clases de análisis
+
+El diagrama PlantUML del análisis se muestra a continuación. Para que sea legible, usa nombres
+conceptuales en castellano; las tablas anteriores mantienen la nomenclatura técnica del proyecto.
+
+| Diagrama | Código fuente |
+|----------|---------------|
+| ![Clases de análisis](./Analisis/ClasesAnalisis/ClasesAnalisis.svg) | [ClasesAnalisis.puml](./Analisis/ClasesAnalisis/ClasesAnalisis.puml) |
+
+## 5.5 Análisis de paquetes
+
+### 5.5.1 Paquetes backend implicados
+
+| Paquete | Papel en el módulo FinOps |
+|---------|---------------------------|
+| `app/api/v1/` | Endpoints REST de costes, sincronización e insights |
+| `app/services/` | Reglas de negocio, sincronización y análisis |
+| `app/repositories/` | Acceso a datos financieros |
+| `app/models/` | Entidades persistentes |
+| `app/schemas/` | Contratos Pydantic de entrada/salida |
+
+### 5.5.2 Paquetes frontend implicados
+
+| Paquete | Papel en el módulo FinOps |
+|---------|---------------------------|
+| `src/app/(dashboard)/costs/` | Pantalla principal de costes |
+| `src/components/costs/` | Componentes visuales específicos |
+| `src/hooks/` | Hooks de consulta y mutación |
+| `src/lib/` | Cliente API, tipos y utilidades |
+
+### 5.5.3 Dependencias con módulos existentes
+
+El módulo FinOps depende de autenticación, credenciales, agentes, auditoría y LLM. Esa dependencia es natural: el coste solo tiene sentido dentro de una organización autenticada, asociado a agentes descubiertos y, opcionalmente, interpretado por el CAIO Virtual.

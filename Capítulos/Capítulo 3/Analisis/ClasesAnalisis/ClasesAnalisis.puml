@@ -1,0 +1,51 @@
+@startuml ClasesAnalisis
+
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+title Clases de analisis - Modulo FinOps
+
+package "Modelo" {
+  class Organizacion
+  class CredencialCloud
+  class AgenteIA
+  class DatoFacturacion
+  class RegistroUsoLLM
+  class RegistroAuditoria
+}
+
+package "Vista" {
+  class DashboardCostes
+  class VistaKPIs
+  class VistaTendencia
+  class TablaCostesAgente
+  class VistaInsights
+}
+
+package "Controlador" {
+  class ControladorDashboard
+  class ControladorSincronizacion
+  class ControladorInsights
+}
+
+Organizacion "1" -- "0..*" CredencialCloud
+Organizacion "1" -- "0..*" AgenteIA
+Organizacion "1" -- "0..*" DatoFacturacion
+Organizacion "1" -- "0..*" RegistroUsoLLM
+Organizacion "1" -- "0..*" RegistroAuditoria
+
+AgenteIA "0..1" -- "0..*" DatoFacturacion
+
+DashboardCostes --> ControladorDashboard
+DashboardCostes --> ControladorSincronizacion
+VistaKPIs --> DatoFacturacion
+VistaTendencia --> DatoFacturacion
+TablaCostesAgente --> AgenteIA
+VistaInsights --> ControladorInsights
+
+ControladorDashboard --> DatoFacturacion
+ControladorSincronizacion --> CredencialCloud
+ControladorSincronizacion --> RegistroAuditoria
+ControladorInsights --> RegistroUsoLLM
+
+@enduml
