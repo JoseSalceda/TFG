@@ -222,3 +222,133 @@ conceptuales en castellano; las tablas anteriores mantienen la nomenclatura téc
 ### 5.5.3 Dependencias con módulos existentes
 
 El módulo FinOps depende de autenticación, credenciales, agentes, auditoría y LLM. Esa dependencia es natural: el coste solo tiene sentido dentro de una organización autenticada, asociado a agentes descubiertos y, opcionalmente, interpretado por el CAIO Virtual.
+
+---
+
+# 6. Disciplina de Diseño
+
+## 6.1 Introducción
+
+La disciplina de diseño transforma el análisis anterior en una solución técnica concreta. El diseño define arquitectura, contratos, clases de diseño, modelo físico y paquetes, preparando la implementación y las pruebas.
+
+El criterio principal es mantener bajo acoplamiento con la plataforma existente. Las decisiones deben ser suficientemente concretas para guiar el desarrollo, pero sin prometer funcionalidades que dependan de datos o componentes todavía no validados.
+
+## 6.2 Diseño de la arquitectura
+
+### 6.2.1 Vista lógica del módulo FinOps
+
+La vista lógica propuesta es:
+
+```text
+Frontend /costs
+  -> hooks de datos
+  -> API REST /billing/*
+  -> servicios FinOps
+  -> repositorios
+  -> modelos persistentes
+  -> integraciones AWS / LLM
+```
+
+El frontend no calcula reglas de negocio financieras; solo presenta datos y estados. El backend concentra agregaciones, sincronización, control de acceso y trazabilidad.
+
+### 6.2.2 Vista de despliegue
+
+El despliegue mantiene la forma general de Theia Officer: frontend Next.js, backend FastAPI y base de datos relacional, ejecutados en contenedores Docker durante el desarrollo. Las APIs externas se consumen desde el backend para no exponer credenciales cloud al navegador.
+
+El diagrama representa componentes desplegados y dependencias externas. Se omite el detalle de
+contenedores para mantener la vista centrada en las responsabilidades del módulo.
+
+| Diagrama | Código fuente |
+|----------|---------------|
+| ![Diagrama de despliegue](./Diseño/Despliegue/Despliegue.svg) | [Despliegue.puml](./Diseño/Despliegue/Despliegue.puml) |
+
+### 6.2.3 Decisiones tecnológicas principales
+
+| Decisión | Justificación |
+|----------|---------------|
+| FastAPI para la API | Encaja con la plataforma existente y su sistema de dependencias |
+| SQLAlchemy async para persistencia | Mantiene el patrón de repositorios y sesiones por petición |
+| PostgreSQL como base objetivo | Permite restricciones únicas, índices y agregaciones fiables |
+| SDK cloud directo para Cost Explorer | Lectura determinista de datos estructurados |
+| LLM solo para interpretación | Evita usar razonamiento generativo para extraer datos tabulares |
+| TanStack Query en frontend | Coordina caché, estados de carga y refetch sin lógica manual excesiva |
+
+### 6.2.4 Requisitos no funcionales y decisiones asociadas
+
+| Requisito | Decisión de diseño |
+|-----------|--------------------|
+| Seguridad | Credenciales cifradas y nunca expuestas al frontend |
+| Multi-tenancy | Todas las consultas financieras se acotan por `organization_id` |
+| Idempotencia | Clave natural sobre organización, proveedor, recurso y periodo |
+| Trazabilidad | Sincronizaciones y operaciones relevantes deben generar auditoría |
+| Rendimiento | Llamadas externas con timeout; agregaciones por periodo acotado |
+| Extensibilidad | Modelo con columna `provider` y servicios por proveedor |
+| Robustez | El fallo del LLM no debe impedir ver datos numéricos |
+
+## 6.3 Diseño de casos de uso
+
+### 6.3.1 Diseño detallado de CU-07
+
+CU-07 se diseña como un dashboard compuesto por varias consultas independientes. Esta separación permite que una parte de la interfaz pueda cargarse aunque otra tarde más o falle.
+
+| Zona | Datos | Contrato de diseño |
+|------|-------|--------------------|
+| KPIs generales | coste total, moneda, proveedores | `GET /billing/status` |
+| Tabla por agente | coste agregado por agente | `GET /billing/costs` |
+| Tendencia | serie temporal mensual | `GET /billing/costs/trend` |
+| Desglose por servicio | coste por servicio/día | `GET /billing/costs/breakdown` |
+| Insights CAIO | interpretación textual | `GET /billing/costs/insights` |
+
+El camino alternativo sin datos debe tratarse como estado esperado, no como error. La primera visita al dashboard puede no tener registros de facturación todavía.
+
+El diagrama de secuencia resume el flujo principal de consulta. Las llamadas numéricas se agrupan
+como lectura de costes para no duplicar el mismo recorrido API-servicio-repositorio en cada endpoint.
+
+| Diagrama | Código fuente |
+|----------|---------------|
+| ![Secuencia CU-07](./Diseño/Secuencias/DS-CU07.svg) | [DS-CU07.puml](./Diseño/Secuencias/DS-CU07.puml) |
+
+### 6.3.2 Diseño de la sincronización de costes
+
+La sincronización es la operación que alimenta `BillingData`. Debe ser administrativa, auditable e idempotente.
+
+Pasos de diseño:
+
+1. Validar autenticación y permisos del usuario.
+2. Recuperar credenciales cloud cifradas de la organización.
+3. Descifrar credenciales solo en memoria.
+4. Consultar Cost Explorer para un periodo acotado.
+5. Normalizar registros de coste.
+6. Intentar asociar cada coste con un agente conocido.
+7. Persistir mediante update-or-insert.
+8. Registrar auditoría.
+
+| Diagrama | Código fuente |
+|----------|---------------|
+| ![Actividad de sincronización](./Diseño/Actividad/ActividadSync.svg) | [ActividadSync.puml](./Diseño/Actividad/ActividadSync.puml) |
+
+### 6.3.3 Tratamiento de CU-08 y dependencia de histórico
+
+CU-08 no debe diseñarse como una simple llamada puntual. El diseño correcto es una tarea periódica que analiza series temporales acumuladas.
+
+| Aspecto | Diseño propuesto |
+|---------|------------------|
+| Entrada | `BillingData` de varias semanas |
+| Proceso | Cálculo de línea base por agente/proveedor |
+| Salida | Resultado de anomalía y auditoría |
+| Frecuencia | Diaria, coherente con la latencia de Cost Explorer |
+| Riesgo | Falsos positivos si no hay histórico suficiente |
+
+Por tanto, CU-08 queda preparado en el diseño, pero condicionado a disponer de datos reales suficientes para validar el algoritmo.
+
+### 6.3.4 Impacto de CU-09 a CU-13 en la evolución del módulo
+
+| Caso | Impacto de diseño |
+|------|-------------------|
+| CU-09 | Requiere relacionar coste con uso, no solo con existencia de agente |
+| CU-10 | Reutiliza `LLMUsageLog` y debe distinguir coste del cliente frente a coste de la plataforma |
+| CU-11 | Necesita catálogo de modelos y criterio de equivalencia funcional |
+| CU-12 | Reutiliza tendencia histórica y añade modelo predictivo simple |
+| CU-13 | Añade configuración persistente de umbrales y canal de notificación |
+
+El diseño de datos de CU-07 debe permitir esta evolución sin rehacer la base financiera.

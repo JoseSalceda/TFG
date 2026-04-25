@@ -1,0 +1,35 @@
+@startuml DS-CU07
+
+title Secuencia - CU-07 Dashboard consolidado de costes IA
+
+actor Usuario
+participant "Dashboard /costs" as UI
+participant "Hooks useBilling*" as Hooks
+participant "Billing API" as API
+participant "BillingService" as Service
+participant "BillingRepository" as Repo
+participant "billing_data" as DB
+participant "LLMService" as LLM
+
+Usuario -> UI : abre dashboard
+UI -> Hooks : solicita datos
+Hooks -> API : GET /billing/costs
+API -> Service : agregar costes
+Service -> Repo : consultar periodo
+Repo -> DB : SELECT
+DB --> Repo : registros
+Repo --> Service : costes
+Service --> API : KPIs, tabla y tendencia
+API --> Hooks : JSON
+
+opt Insight CAIO
+  Hooks -> API : GET /billing/costs/insights
+  API -> LLM : interpretar resumen
+  LLM --> API : insight o fallback
+  API --> Hooks : JSON
+end
+
+Hooks --> UI : datos disponibles
+UI --> Usuario : muestra dashboard
+
+@enduml

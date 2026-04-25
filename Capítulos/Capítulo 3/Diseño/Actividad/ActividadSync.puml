@@ -1,0 +1,495 @@
+@startuml ActividadSync
+
+title Actividad - Sincronizacion de costes
+
+start
+
+:Administrador solicita sincronizacion;
+:Validar usuario y organizacion;
+:Recuperar credenciales cloud;
+
+if (Credenciales disponibles?) then (no)
+  :Finalizar sin sincronizar proveedor;
+  stop
+else (si)
+endif
+
+:Descifrar credenciales en memoria;
+
+if (Credenciales validas?) then (no)
+  :Registrar error de sincronizacion;@startuml ActividadSync
+
+title Actividad - Sincronizacion de costes
+
+start
+
+:Administrador solicita sincronizacion;
+:Validar usuario y organizacion;
+:Recuperar credenciales cloud;
+
+if (Credenciales disponibles?) then (no)
+  :Finalizar sin sincronizar proveedor;
+  stop
+else (si)
+endif
+
+:Descifrar credenciales en memoria;
+
+if (Credenciales validas?) then (no)
+  :Registrar error de sincronizacion;
+  stop
+else (si)
+endif
+
+:Consultar proveedor de billing\n(Cost Explorer / equivalente);
+
+if (Respuesta correcta?) then (no)
+  :Guardar resultado con error visible;
+  stop
+else (si)
+endif
+
+:Normalizar registros de coste;
+
+while (quedan registros?) is (si)
+  :Asociar recurso con agente si es posible;
+  :Persistir con update-or-insert;
+endwhile (no)
+
+:Registrar auditoria;
+:Devolver resumen de sincronizacion;
+
+stop
+
+@enduml
+@startuml ActividadSync
+
+title Actividad - Sincronizacion de costes
+
+start
+
+:Administrador solicita sincronizacion;
+:Validar usuario y organizacion;
+:Recuperar credenciales cloud;
+
+if (Credenciales disponibles?) then (no)
+  :Finalizar sin sincronizar proveedor;
+  stop
+else (si)
+endif
+
+:Descifrar credenciales en memoria;
+
+if (Credenciales validas?) then (no)
+  :Registrar error de sincronizacion;
+  stop
+else (si)
+endif
+
+:Consultar proveedor de billing\n(Cost Explorer / equivalente);
+
+if (Respuesta correcta?) then (no)
+  :Guardar resultado con error visible;
+  stop
+else (si)
+endif
+
+:Normalizar registros de coste;
+
+while (quedan registros?) is (si)
+  :Asociar recurso con agente si es posible;
+  :Persistir con update-or-insert;
+endwhile (no)
+
+:Registrar auditoria;
+:Devolver resumen de sincronizacion;
+
+stop@startuml ActividadSync
+
+title Actividad - Sincronizacion de costes
+
+start
+
+:Administrador solicita sincronizacion;
+:Validar usuario y organizacion;
+:Recuperar credenciales cloud;
+
+if (Credenciales disponibles?) then (no)
+  :Finalizar sin sincronizar proveedor;
+  stop
+else (si)
+endif
+
+:Descifrar credenciales en memoria;
+
+if (Credenciales validas?) then (no)
+  :Registrar error de sincronizacion;
+  stop
+else (si)
+endif
+
+:Consultar proveedor de billing\n(Cost Explorer / equivalente);
+
+if (Respuesta correcta?) then (no)
+  :Guardar resultado con error visible;
+  stop
+else (si)
+endif
+
+:Normalizar registros de coste;
+
+while (quedan registros?) is (si)
+  :Asociar recurso con agente si es posible;
+  :Persistir con update-or-insert;
+endwhile (no)
+
+:Registrar auditoria;
+:Devolver resumen de sincronizacion;
+
+stop
+
+@enduml
+@startuml ActividadSync
+
+title Actividad - Sincronizacion de costes
+
+start
+
+:Administrador solicita sincronizacion;
+:Validar usuario y organizacion;
+:Recuperar credenciales cloud;
+
+if (Credenciales disponibles?) then (no)
+  :Finalizar sin sincronizar proveedor;
+  stop
+else (si)
+endif
+
+:Descifrar credenciales en memoria;
+
+if (Credenciales validas?) then (no)
+  :Registrar error de sincronizacion;
+  stop
+else (si)
+endif
+
+:Consultar proveedor de billing\n(Cost Explorer / equivalente);
+
+if (Respuesta correcta?) then (no)
+  :Guardar resultado con error visible;
+  stop
+else (si)
+endif
+
+:Normalizar registros de coste;
+
+while (quedan registros?) is (si)
+  :Asociar recurso con agente si es posible;
+  :Persistir con update-or-insert;
+endwhile (no)
+
+:Registrar auditoria;
+:Devolver resumen de sincronizacion;
+
+stop
+
+@enduml
+@startuml ActividadSync
+
+title Actividad - Sincronizacion de costes
+
+start
+
+:Administrador solicita sincronizacion;
+:Validar usuario y organizacion;
+:Recuperar credenciales cloud;
+
+if (Credenciales disponibles?) then (no)
+  :Finalizar sin sincronizar proveedor;
+  stop
+else (si)
+endif
+
+:Descifrar credenciales en memoria;
+
+if (Credenciales validas?) then (no)
+  :Registrar error de sincronizacion;
+  stop
+else (si)
+endif
+
+:Consultar proveedor de billing\n(Cost Explorer / equivalente);
+
+if (Respuesta correcta?) then (no)
+  :Guardar resultado con error visible;
+  stop
+else (si)
+endif
+
+:Normalizar registros de coste;
+
+while (quedan registros?) is (si)
+  :Asociar recurso con agente si es posible;
+  :Persistir con update-or-insert;
+endwhile (no)
+
+:Registrar auditoria;
+:Devolver resumen de sincronizacion;
+
+stop
+
+@enduml
+@startuml ActividadSync
+
+title Actividad - Sincronizacion de costes
+
+start
+
+:Administrador solicita sincronizacion;
+:Validar usuario y organizacion;
+:Recuperar credenciales cloud;
+
+if (Credenciales disponibles?) then (no)
+  :Finalizar sin sincronizar proveedor;
+  stop
+else (si)
+endif
+
+:Descifrar credenciales en memoria;
+
+if (Credenciales validas?) then (no)
+  :Registrar error de sincronizacion;
+  stop
+else (si)
+endif
+
+:Consultar proveedor de billing\n(Cost Explorer / equivalente);
+
+if (Respuesta correcta?) then (no)
+  :Guardar resultado con error visible;
+  stop
+else (si)
+endif
+
+:Normalizar registros de coste;
+
+while (quedan registros?) is (si)
+  :Asociar recurso con agente si es posible;
+  :Persistir con update-or-insert;
+endwhile (no)
+
+:Registrar auditoria;
+:Devolver resumen de sincronizacion;
+
+stop
+
+@enduml
+@startuml ActividadSync
+
+title Actividad - Sincronizacion de costes
+
+start
+
+:Administrador solicita sincronizacion;
+:Validar usuario y organizacion;
+:Recuperar credenciales cloud;
+
+if (Credenciales disponibles?) then (no)
+  :Finalizar sin sincronizar proveedor;
+  stop
+else (si)
+endif
+
+:Descifrar credenciales en memoria;
+
+if (Credenciales validas?) then (no)
+  :Registrar error de sincronizacion;
+  stop
+else (si)
+endif
+
+:Consultar proveedor de billing\n(Cost Explorer / equivalente);
+
+if (Respuesta correcta?) then (no)
+  :Guardar resultado con error visible;
+  stop
+else (si)
+endif
+
+:Normalizar registros de coste;
+
+while (quedan registros?) is (si)
+  :Asociar recurso con agente si es posible;
+  :Persistir con update-or-insert;
+endwhile (no)
+
+:Registrar auditoria;
+:Devolver resumen de sincronizacion;
+
+stop
+
+@enduml
+@startuml ActividadSync
+
+title Actividad - Sincronizacion de costes
+
+start
+
+:Administrador solicita sincronizacion;
+:Validar usuario y organizacion;
+:Recuperar credenciales cloud;
+
+if (Credenciales disponibles?) then (no)
+  :Finalizar sin sincronizar proveedor;
+  stop
+else (si)
+endif
+
+:Descifrar credenciales en memoria;
+
+if (Credenciales validas?) then (no)
+  :Registrar error de sincronizacion;
+  stop
+else (si)
+endif
+
+:Consultar proveedor de billing\n(Cost Explorer / equivalente);
+
+if (Respuesta correcta?) then (no)
+  :Guardar resultado con error visible;
+  stop
+else (si)
+endif
+
+:Normalizar registros de coste;
+
+while (quedan registros?) is (si)
+  :Asociar recurso con agente si es posible;
+  :Persistir con update-or-insert;
+endwhile (no)
+
+:Registrar auditoria;
+:Devolver resumen de sincronizacion;
+
+stop
+
+@enduml
+@startuml ActividadSync
+
+title Actividad - Sincronizacion de costes
+
+start
+
+:Administrador solicita sincronizacion;
+:Validar usuario y organizacion;
+:Recuperar credenciales cloud;
+
+if (Credenciales disponibles?) then (no)
+  :Finalizar sin sincronizar proveedor;
+  stop
+else (si)
+endif
+
+:Descifrar credenciales en memoria;
+
+if (Credenciales validas?) then (no)
+  :Registrar error de sincronizacion;
+  stop
+else (si)
+endif
+
+:Consultar proveedor de billing\n(Cost Explorer / equivalente);
+
+if (Respuesta correcta?) then (no)
+  :Guardar resultado con error visible;
+  stop
+else (si)
+endif
+
+:Normalizar registros de coste;
+
+while (quedan registros?) is (si)
+  :Asociar recurso con agente si es posible;
+  :Persistir con update-or-insert;
+endwhile (no)
+
+:Registrar auditoria;
+:Devolver resumen de sincronizacion;
+
+stop
+
+@enduml
+@startuml ActividadSync
+
+title Actividad - Sincronizacion de costes
+
+start
+
+:Administrador solicita sincronizacion;
+:Validar usuario y organizacion;
+:Recuperar credenciales cloud;
+
+if (Credenciales disponibles?) then (no)
+  :Finalizar sin sincronizar proveedor;
+  stop
+else (si)
+endif
+
+:Descifrar credenciales en memoria;
+
+if (Credenciales validas?) then (no)
+  :Registrar error de sincronizacion;
+  stop
+else (si)
+endif
+
+:Consultar proveedor de billing\n(Cost Explorer / equivalente);
+
+if (Respuesta correcta?) then (no)
+  :Guardar resultado con error visible;
+  stop
+else (si)
+endif
+
+:Normalizar registros de coste;
+
+while (quedan registros?) is (si)
+  :Asociar recurso con agente si es posible;
+  :Persistir con update-or-insert;
+endwhile (no)
+
+:Registrar auditoria;
+:Devolver resumen de sincronizacion;
+
+stop
+
+@enduml
+
+
+@enduml
+
+  stop
+else (si)
+endif
+
+:Consultar proveedor de billing\n(Cost Explorer / equivalente);
+
+if (Respuesta correcta?) then (no)
+  :Guardar resultado con error visible;
+  stop
+else (si)
+endif
+
+:Normalizar registros de coste;
+
+while (quedan registros?) is (si)
+  :Asociar recurso con agente si es posible;
+  :Persistir con update-or-insert;
+endwhile (no)
+
+:Registrar auditoria;
+:Devolver resumen de sincronizacion;
+
+stop
+
+@enduml

@@ -1,0 +1,23 @@
+@startuml Despliegue
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+title Despliegue - Modulo FinOps
+
+rectangle "Usuario" as Usuario
+rectangle "Frontend\nNext.js" as Frontend
+rectangle "Backend\nFastAPI" as Backend
+rectangle "Base de datos\nPostgreSQL" as DB
+rectangle "AWS Cost Explorer" as CostExplorer
+rectangle "Amazon Bedrock" as Bedrock
+rectangle "Proveedor LLM" as LLM
+
+Usuario --> Frontend : navegador
+Frontend --> Backend : REST + JWT
+Backend --> DB : SQLAlchemy
+Backend --> CostExplorer : costes
+Backend --> Bedrock : agentes
+Backend --> LLM : insights
+
+@enduml
