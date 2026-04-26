@@ -12,7 +12,7 @@ El capítulo 2 prioriza los nuevos casos de uso FinOps mediante MoSCoW. CU-07 y 
 
 ### 5.2.1 Arquitectura existente de Theia Officer
 
-Theia Officer utiliza una arquitectura por capas: frontend Next.js, backend FastAPI, servicios de dominio, repositorios de acceso a datos y modelos SQLAlchemy. La documentación técnica del proyecto describe el flujo general como `Frontend -> API -> Service -> Repository -> ORM`, con inyección de dependencias mediante `Depends()` y sesiones de base de datos por petición.
+Theia Officer utiliza una arquitectura por capas: frontend Next.js, backend FastAPI, servicios de dominio, repositorios de acceso a datos y modelos SQLAlchemy. Esta organización sigue el criterio de separación de responsabilidades recomendado por la arquitectura limpia [16]. La documentación técnica del proyecto describe el flujo general como `Frontend -> API -> Service -> Repository -> ORM`, con inyección de dependencias mediante `Depends()` [13] y sesiones de base de datos por petición mediante SQLAlchemy async [14].
 
 El módulo FinOps debe respetar esa estructura para no introducir una arquitectura paralela. La responsabilidad de cada capa queda así:
 
@@ -68,7 +68,7 @@ AWS Cost Explorer
   -> análisis textual opcional por el CAIO Virtual
 ```
 
-Cost Explorer tiene una latencia propia de facturación, por lo que el módulo debe tratar los datos como históricos. No se debe prometer monitorización en tiempo real basada únicamente en esta fuente.
+Cost Explorer tiene una latencia propia de facturación y actualiza los datos de coste al menos una vez cada 24 horas, dependiendo de los datos de facturación disponibles [17]. Por tanto, el módulo debe tratar los datos como históricos y no debe prometer monitorización en tiempo real basada únicamente en esta fuente.
 
 ## 5.3 Análisis de casos de uso
 
@@ -153,7 +153,7 @@ La siguiente tabla no afirma que todos los endpoints estén implementados. Defin
 
 ### 5.4.1 Identificación de clases Modelo, Vista y Controlador
 
-Siguiendo la guía del capítulo 3, las clases de análisis se derivan del modelo de dominio y de los casos de uso. Se separan en Modelo, Vista y Controlador.
+Siguiendo la guía del capítulo 3 y la separación habitual entre clases de análisis de tipo Modelo, Vista y Controlador [12], las clases se derivan del modelo de dominio y de los casos de uso.
 
 ### 5.4.2 Clases modelo
 
@@ -266,12 +266,12 @@ contenedores para mantener la vista centrada en las responsabilidades del módul
 
 | Decisión | Justificación |
 |----------|---------------|
-| FastAPI para la API | Encaja con la plataforma existente y su sistema de dependencias |
-| SQLAlchemy async para persistencia | Mantiene el patrón de repositorios y sesiones por petición |
+| FastAPI para la API | Encaja con la plataforma existente y su sistema de dependencias [13] |
+| SQLAlchemy async para persistencia | Mantiene el patrón de repositorios y sesiones por petición [14] |
 | PostgreSQL como base objetivo | Permite restricciones únicas, índices y agregaciones fiables |
-| SDK cloud directo para Cost Explorer | Lectura determinista de datos estructurados |
+| SDK cloud directo para Cost Explorer | Lectura determinista de datos estructurados y coherente con la latencia de Cost Explorer [17] |
 | LLM solo para interpretación | Evita usar razonamiento generativo para extraer datos tabulares |
-| TanStack Query en frontend | Coordina caché, estados de carga y refetch sin lógica manual excesiva |
+| TanStack Query en frontend | Coordina caché, estados de carga y refetch sin lógica manual excesiva [15] |
 
 ### 6.2.4 Requisitos no funcionales y decisiones asociadas
 

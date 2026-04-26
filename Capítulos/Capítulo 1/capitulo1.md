@@ -196,3 +196,15 @@ Esta estructura metodológica asegura no solo el cumplimiento de los objetivos a
 [10] FinOps Foundation (2024). Cost Estimation of AI Workloads. Grupo de Trabajo Oficial de FinOps para Inteligencia Artificial. Disponible en: https://www.finops.org/wg/cost-estimation-of-ai-workloads/
 
 [11] AWS Machine Learning Blog (2024). Track, allocate, and manage your generative AI cost and usage with Amazon Bedrock. Documentación oficial de arquitectura sobre el uso de logs de invocación e Inference Profiles. Disponible en: https://aws.amazon.com/blogs/machine-learning/track-allocate-and-manage-your-generative-ai-cost-and-usage-with-amazon-bedrock/
+
+[12] Larman, C. (2004). *Applying UML and Patterns: An Introduction to Object-Oriented Analysis and Design and Iterative Development* (3.ª ed.). Prentice Hall PTR.
+
+[13] FastAPI. Documentación oficial. Disponible en: https://fastapi.tiangolo.com
+
+[14] SQLAlchemy. Documentación oficial de SQLAlchemy 2.0 y asyncio. Disponible en: https://docs.sqlalchemy.org/en/20/
+
+[15] TanStack Query. Documentación oficial. Disponible en: https://tanstack.com/query/latest
+
+[16] Martin, R. C. (2017). *Clean Architecture: A Craftsman's Guide to Software Structure and Design*. Prentice Hall PTR.
+
+[17] AWS. *Analyzing your costs and usage with AWS Cost Explorer*. Disponible en: https://docs.aws.amazon.com/cost-management/latest/userguide/ce-what-is.html
