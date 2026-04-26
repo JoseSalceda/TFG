@@ -1,0 +1,72 @@
+@startuml DER
+
+hide circle
+skinparam linetype ortho
+
+title Modelo de datos - Modulo FinOps
+
+entity "organizations" as Org {
+  *id
+  --
+  name
+}
+
+entity "credentials" as Cred {
+  *id
+  --
+  organization_id
+  provider
+  encrypted_data
+}
+
+entity "agents" as Agent {
+  *id
+  --
+  organization_id
+  provider
+  provider_id
+  name
+}
+
+entity "billing_data" as Billing {
+  *id
+  --
+  organization_id
+  agent_id
+  provider
+  resource_id
+  period_start
+  period_end
+  cost
+  currency
+  service_name
+  usage_type
+  synced_at
+}
+
+entity "llm_usage_logs" as LLM {
+  *id
+  --
+  organization_id
+  provider
+  model
+  cost_usd
+}
+
+entity "audit_logs" as Audit {
+  *id
+  --
+  organization_id
+  action
+  details
+}
+
+Org ||--o{ Cred
+Org ||--o{ Agent
+Org ||--o{ Billing
+Org ||--o{ LLM
+Org ||--o{ Audit
+
+Agent |o--o{ Billing
+
+@enduml

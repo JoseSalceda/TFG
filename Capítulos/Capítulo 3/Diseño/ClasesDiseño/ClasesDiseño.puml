@@ -1,0 +1,69 @@
+@startuml ClasesDiseno
+
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+title Clases de diseno - Modulo FinOps
+
+package "API" {
+  class BillingRouter {
+    +GET /billing/status
+    +GET /billing/costs/*
+    +POST /billing/sync
+  }
+}
+
+package "Servicios" {
+  class BillingService {
+    +agregarCostes()
+    +sincronizar()
+  }
+
+  class AWSBillingService {
+    +leerCostExplorer()
+  }
+
+  class LLMService {
+    +generarInsight()
+  }
+}
+
+package "Persistencia" {
+  class BillingRepository {
+    +buscarPorPeriodo()
+    +updateOrInsert()
+  }
+
+  class BillingData {
+    organizationId
+    provider
+    resourceId
+    period
+    cost
+  }
+
+  class Agent
+  class AuditLog
+}
+
+package "Schemas" {
+  class BillingStatusResponse
+  class BillingCostSummary
+  class BillingInsightsResponse
+}
+
+BillingRouter --> BillingService
+BillingRouter --> LLMService : insights
+BillingRouter --> BillingStatusResponse
+BillingRouter --> BillingCostSummary
+BillingRouter --> BillingInsightsResponse
+
+BillingService --> BillingRepository
+BillingService --> AWSBillingService : sincronizacion
+BillingService --> Agent : matching
+BillingService --> AuditLog : auditoria
+
+BillingRepository --> BillingData
+BillingData --> Agent : agente opcional
+
+@enduml

@@ -352,3 +352,137 @@ Por tanto, CU-08 queda preparado en el diseño, pero condicionado a disponer de 
 | CU-13 | Añade configuración persistente de umbrales y canal de notificación |
 
 El diseño de datos de CU-07 debe permitir esta evolución sin rehacer la base financiera.
+
+## 6.4 Diseño de clases
+
+### 6.4.1 Transformación de análisis a diseño
+
+Las clases de análisis se transforman en componentes técnicos:
+
+| Análisis | Diseño backend/frontend |
+|----------|-------------------------|
+| Controlador de dashboard | Router + servicio + hooks |
+| Vista de dashboard | Página `/costs` y componentes |
+| Dato de facturación | Modelo ORM + schema Pydantic |
+| Sistema externo AWS | Servicio de integración cloud |
+| Insight CAIO | Servicio LLM aplicado a datos agregados |
+
+### 6.4.2 Clases backend
+
+| Clase / componente | Responsabilidad |
+|--------------------|-----------------|
+| `BillingData` | Persistir registros de coste |
+| `BillingRepository` | Consultar y persistir costes |
+| `BillingService` | Agregar costes y coordinar sincronización |
+| `AWSBillingService` | Encapsular lectura de Cost Explorer |
+| Schemas Pydantic | Definir contratos de salida |
+| Router de billing | Exponer operaciones autenticadas bajo `/billing` |
+
+### 6.4.3 Componentes frontend
+
+| Componente | Responsabilidad |
+|------------|-----------------|
+| `CostsDashboardPage` | Componer la pantalla y estados |
+| `useBilling*` | Encapsular llamadas y caché |
+| `CostTrendChart` | Visualizar evolución temporal |
+| `ServiceBreakdown` | Visualizar coste por servicio |
+| `CostInsightsCard` | Mostrar análisis textual del CAIO |
+| Tabla de agentes | Mostrar coste atribuido por agente |
+
+### 6.4.4 Diagrama de clases de diseño
+
+El diagrama agrupa los endpoints de lectura de costes bajo `/billing/costs/*`. Esa agrupación
+incluye resumen, tendencia, desglose e insights, aunque en la tabla de contratos aparezcan
+separados.
+
+| Diagrama | Código fuente |
+|----------|---------------|
+| ![Clases de diseño](./Diseño/ClasesDiseño/ClasesDiseño.svg) | [ClasesDiseño.puml](./Diseño/ClasesDiseño/ClasesDiseño.puml) |
+
+## 6.5 Diseño de datos
+
+### 6.5.1 Modelo físico
+
+La entidad central del diseño es `billing_data`. No sustituye al modelo de agentes ni al de organizaciones; los complementa con una vista temporal de coste.
+
+| Diagrama | Código fuente |
+|----------|---------------|
+| ![Modelo entidad-relación](./Diseño/ModeloDatos/DER.svg) | [DER.puml](./Diseño/ModeloDatos/DER.puml) |
+
+### 6.5.2 Tabla `billing_data`
+
+| Campo | Papel de diseño |
+|-------|-----------------|
+| `organization_id` | Aislamiento multi-tenant |
+| `provider` | Extensibilidad AWS/Azure/GCP |
+| `resource_id` | Identificador cloud del recurso facturado |
+| `agent_id` | Asociación opcional con agente conocido |
+| `period_start`, `period_end` | Ventana temporal del coste |
+| `cost`, `currency` | Valor financiero |
+| `service_name`, `usage_type` | Desglose técnico |
+| `synced_at` | Trazabilidad de sincronización |
+
+### 6.5.3 Relaciones e idempotencia
+
+La clave de idempotencia propuesta es:
+
+```text
+(organization_id, provider, resource_id, period_start, period_end)
+```
+
+Esto permite repetir una sincronización del mismo periodo sin crear duplicados. Si se aumenta la granularidad a nivel de token o invocación, será necesaria una ampliación del modelo porque Cost Explorer no proporciona ese detalle por sí solo.
+
+## 6.6 Diseño de paquetes
+
+### 6.6.1 Paquetes backend
+
+| Diagrama | Código fuente |
+|----------|---------------|
+| ![Paquetes backend](./Diseño/Paquetes/Backend/PaquetesBackend.svg) | [PaquetesBackend.puml](./Diseño/Paquetes/Backend/PaquetesBackend.puml) |
+
+El backend mantiene cohesión separando API, servicios, repositorios, modelos y schemas. Las integraciones externas quedan fuera del router para evitar que la capa HTTP conozca detalles de AWS.
+
+### 6.6.2 Paquetes frontend
+
+| Diagrama | Código fuente |
+|----------|---------------|
+| ![Paquetes frontend](./Diseño/Paquetes/Frontend/PaquetesFrontend.svg) | [PaquetesFrontend.puml](./Diseño/Paquetes/Frontend/PaquetesFrontend.puml) |
+
+El frontend agrupa la pantalla de costes, componentes visuales, hooks y cliente API. La lógica de obtención de datos se concentra en hooks para evitar duplicación en componentes.
+
+### 6.6.3 Cohesión y acoplamiento
+
+El diseño busca:
+
+- alta cohesión en el paquete financiero;
+- bajo acoplamiento con misiones generales de la plataforma;
+- dependencia explícita de autenticación, agentes, credenciales y LLM;
+- posibilidad de añadir CU-08 a CU-13 sin rehacer CU-07.
+
+## 6.7 Diseño de interfaz
+
+### 6.7.1 Estructura del dashboard de costes
+
+El dashboard de CU-07 se organiza en zonas:
+
+| Zona | Contenido |
+|------|-----------|
+| KPIs | coste total, proveedores, última sincronización |
+| Tendencia | evolución temporal |
+| Desglose | servicios o agentes con mayor coste |
+| Insights | lectura ejecutiva generada por CAIO |
+| Tabla | detalle por agente o recurso |
+
+### 6.7.2 Estados de interfaz
+
+| Estado | Diseño esperado |
+|--------|-----------------|
+| Cargando | Skeletons o placeholders, no bloqueo global |
+| Sin datos | Mensaje claro y acción para sincronizar |
+| Error parcial | La zona afectada muestra error sin romper el resto |
+| Datos disponibles | Vista agregada con filtros |
+| LLM no disponible | Se mantienen datos numéricos y se omite/reemplaza insight |
+
+### 6.7.3 Trazabilidad con prototipos del capítulo 2
+
+El prototipo de CU-07 del capítulo 2 se refina en este diseño mediante zonas funcionales. No se introduce una pantalla independiente para cada caso de evolución; CU-08 a CU-13 pueden reutilizar el dashboard o añadir vistas específicas cuando sus datos estén disponibles.

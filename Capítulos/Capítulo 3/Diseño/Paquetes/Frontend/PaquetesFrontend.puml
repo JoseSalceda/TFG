@@ -1,0 +1,37 @@
+@startuml PaquetesFrontend
+
+skinparam packageStyle rectangle
+
+title Paquetes frontend - Modulo FinOps
+
+package "app/(dashboard)/costs" {
+  component "page.tsx" as Page
+}
+
+package "components/costs" {
+  component "KPIs" as KPIs
+  component "TrendChart" as Trend
+  component "Breakdown" as Breakdown
+  component "Insights" as Insights
+  component "AgentTable" as Table
+}
+
+package "hooks" {
+  component "useBilling" as Hook
+}
+
+package "lib" {
+  component "api-client" as Api
+  component "types" as Types
+}
+
+Page --> KPIs
+Page --> Trend
+Page --> Breakdown
+Page --> Insights
+Page --> Table
+Page --> Hook
+Hook --> Api
+Hook --> Types
+
+@enduml

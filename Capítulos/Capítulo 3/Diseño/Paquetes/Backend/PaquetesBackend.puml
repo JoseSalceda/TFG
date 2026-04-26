@@ -1,0 +1,43 @@
+@startuml PaquetesBackend
+
+skinparam packageStyle rectangle
+
+title Paquetes backend - Modulo FinOps
+
+package "api/v1" {
+  component "billing.py" as API
+}
+
+package "services" {
+  component "BillingService" as Service
+  component "AWSBillingService" as AWS
+  component "LLMService" as LLM
+}
+
+package "repositories" {
+  component "BillingRepository" as Repo
+}
+
+package "models" {
+  component "BillingData" as Model
+  component "Agent" as Agent
+  component "Credential" as Credential
+  component "AuditLog" as Audit
+}
+
+package "schemas" {
+  component "Billing schemas" as Schemas
+}
+
+API --> Service
+API --> LLM
+API --> Schemas
+
+Service --> Repo
+Service --> AWS
+Repo --> Model
+Model --> Agent
+Service --> Credential
+Service --> Audit
+
+@enduml
