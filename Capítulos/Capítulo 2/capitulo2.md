@@ -1,4 +1,4 @@
-# 3. Modelo del Dominio
+# 3. Modelo del Dominio y Disciplina de Requisitos
 
 ## 3.1 Introducción
 
@@ -104,18 +104,18 @@ Los requisitos suplementarios, también denominados no funcionales, especifican 
 | **Idempotencia** | Las operaciones de recopilación de datos pueden ejecutarse varias veces sobre el mismo periodo sin generar registros duplicados. |
 | **Extensibilidad** | El sistema de conectores permite incorporar nuevos proveedores cloud sin modificar el código existente. Aunque este TFG se centra en AWS, la arquitectura no debe impedir que en el futuro se añadan GCP o Azure con el mismo nivel de análisis FinOps. |
 
-# 4. Disciplina de Requisitos
+---
 
-## 4.1 Introducción
+## 3.8 Introducción
 
-Una vez definido el modelo de dominio, la disciplina de requisitos concreta qué debe hacer el sistema desde la perspectiva de los actores que interactúan con él. Las misiones FinOps identificadas en el capítulo anterior como respuesta al problema de visibilidad de costes se traducen aquí en casos de uso concretos, priorizados y trazables. Se adopta un enfoque en dos capas diferenciadas:
+Una vez definido el modelo de dominio, la disciplina de requisitos concreta qué debe hacer el sistema desde la perspectiva de los actores que interactúan con él. Las misiones FinOps identificadas en los apartados anteriores como respuesta al problema de visibilidad de costes se traducen aquí en casos de uso concretos, priorizados y trazables. Se adopta un enfoque en dos capas diferenciadas:
 
 - **Capa base (Theia Craft)**: funcionalidades ya implementadas en la plataforma Theia Officer por el equipo de Theia Craft. Se documentan como dependencias preexistentes sobre las que se construirá el trabajo de este TFG.
 - **Nuevas misiones FinOps (TFG)**: casos de uso diseñados e implementados en el marco de este trabajo. Constituyen la aportación principal y extienden la plataforma con capacidades de visibilidad y optimización de costes de inteligencia artificial.
 
 El sistema que se especifica es el módulo de Misiones FinOps de Theia Officer, con foco en la plataforma AWS.
 
-## 4.2 Actores del sistema
+## 3.9 Actores del sistema
 
 Un actor representa el rol que adopta una entidad externa cuando interactúa con el sistema. Los actores no son personas concretas sino roles: el mismo usuario puede actuar como Administrador en un contexto y como Usuario Regular en otro.
 
@@ -123,11 +123,11 @@ Un actor representa el rol que adopta una entidad externa cuando interactúa con
 | :--- | :--- | :--- |
 | **Administrador** | Primario | Gestor de la organización. Configura las credenciales AWS, lanza misiones y accede a todas las funcionalidades de análisis y configuración. |
 | **Usuario Regular** | Primario | Empleado de la organización. Puede consultar costes y visualizar los dashboards, pero no puede modificar la configuración del sistema. |
-| **CAIO Virtual** | Sistema | El agente de IA de la plataforma. Ejecuta misiones de forma autónoma, sigue rutinas y responde a consultas sobre costes. |
+| **CAIO Virtual** | Sistema | El agente de IA de la plataforma. Ejecuta misiones de forma autónoma, analiza patrones de gasto y responde a consultas sobre costes. |
 | **AWS** | Externo | Proveedor de nube. Expone las APIs de Cost Explorer, Bedrock, IAM y STS que la plataforma base consume para obtener datos de facturación y gestionar agentes. |
 | **Actor Tiempo** | Temporal | Representa la ejecución de tareas programadas: sincronizaciones periódicas, análisis automáticos y reducción de permisos inactivos. |
 
-## 4.3 Plataforma base — Capacidades existentes (Theia Craft)
+## 3.10 Plataforma base — Capacidades existentes (Theia Craft)
 
 Las siguientes capacidades están implementadas en el repositorio por el equipo de Theia Craft. **No son aportación de este TFG**, pero son prerequisito funcional para las nuevas misiones.
 
@@ -140,7 +140,7 @@ Las siguientes capacidades están implementadas en el repositorio por el equipo 
 | CU-05 | Configurar proveedor LLM | Administrador | ✅ Theia Craft | El CAIO Virtual necesita un proveedor LLM para ejecutar los análisis y las recomendaciones |
 | CU-06 | Auditoría de actividad | Administrador | ✅ Theia Craft | Registra las operaciones de las nuevas misiones para trazabilidad y cumplimiento normativo |
 
-## 4.4 Nuevas misiones FinOps — Contribución del TFG
+## 3.11 Nuevas misiones FinOps — Contribución del TFG
 
 Los siguientes casos de uso representan la contribución de este TFG. Se han priorizado mediante **MoSCoW** atendiendo al valor de visibilidad y optimización de costes que aportan y a las dependencias entre ellos.
 
@@ -173,11 +173,11 @@ Los siguientes casos de uso representan la contribución de este TFG. Se han pri
 | CU-14 | Informe de consumo IA | Administrador | Generación automática de informes de consumo IA para la dirección. Responde a F11. |
 | CU-15 | Consolidación de catálogo de agentes | CAIO Virtual | Detecta agentes duplicados o con fuentes de datos redundantes y recomienda consolidación. Responde a F6, F7 y F8. |
 
-## 4.5 Diagramas de Casos de Uso
+## 3.12 Diagramas de Casos de Uso
 
 Se presentan cinco diagramas, uno por actor, mostrando los casos de uso de la plataforma base (Theia Craft) y las nuevas misiones FinOps con los que cada actor interactúa. Dividir el diagrama por actor en lugar de hacer uno único con los quince casos de uso es una decisión deliberada: un solo diagrama de esa escala sería ilegible, y lo que realmente importa es entender qué puede hacer cada rol y qué es nuevo en este TFG.
 
-### 4.5.1 Administrador
+### 3.12.1 Administrador
 
 El Administrador es el actor con mayor alcance: configura la plataforma base y tiene acceso a todas las nuevas misiones FinOps, tanto las de visibilidad como las de optimización y configuración. Es el principal destinatario de las alertas y los informes generados por el CAIO Virtual.
 
@@ -185,7 +185,7 @@ El Administrador es el actor con mayor alcance: configura la plataforma base y t
 | :--- | :--- |
 | ![CU Administrador](./CdU/Administrador/Administrador.svg) | [Ver código PlantUML](./CdU/Administrador/Administrador.puml) |
 
-### 4.5.2 Usuario Regular
+### 3.12.2 Usuario Regular
 
 El Usuario Regular tiene un acceso más restringido: puede consumir los dashboards y proyecciones de costes, pero no puede modificar la configuración ni lanzar misiones. Es el perfil pensado para un analista financiero o un responsable de área que necesita visibilidad sin necesidad de intervenir en la operativa.
 
@@ -193,7 +193,7 @@ El Usuario Regular tiene un acceso más restringido: puede consumir los dashboar
 | :--- | :--- |
 | ![CU Usuario Regular](./CdU/UsuarioRegular/UsuarioRegular.svg) | [Ver código PlantUML](./CdU/UsuarioRegular/UsuarioRegular.puml) |
 
-### 4.5.3 CAIO Virtual
+### 3.12.3 CAIO Virtual
 
 El CAIO Virtual actúa como sistema autónomo, no como usuario. Su diagrama concentra los casos de uso que requieren razonamiento: la gestión de permisos IAM de la plataforma base y el grueso de las misiones de análisis nuevas. No visualiza datos, los produce.
 
@@ -201,7 +201,7 @@ El CAIO Virtual actúa como sistema autónomo, no como usuario. Su diagrama conc
 | :--- | :--- |
 | ![CU CAIO Virtual](./CdU/CAIOVirtual/CAIOVirtual.svg) | [Ver código PlantUML](./CdU/CAIOVirtual/CAIOVirtual.puml) |
 
-### 4.5.4 Actor Tiempo
+### 3.12.4 Actor Tiempo
 
 El Actor Tiempo representa la ejecución programada. Su papel es disparar los análisis periódicos que no requieren intervención humana: el descubrimiento continuo de agentes y la detección automática de anomalías de gasto. Sin este actor, las misiones de monitorización continua no tendrían cómo ejecutarse.
 
@@ -209,7 +209,7 @@ El Actor Tiempo representa la ejecución programada. Su papel es disparar los an
 | :--- | :--- |
 | ![CU Actor Tiempo](./CdU/ActorTiempo/ActorTiempo.svg) | [Ver código PlantUML](./CdU/ActorTiempo/ActorTiempo.puml) |
 
-### 4.5.5 AWS
+### 3.12.5 AWS
 
 AWS es un actor externo que no inicia ninguna interacción: responde a las llamadas de la plataforma. Su diagrama muestra únicamente los casos de uso de la capa base que dependen directamente de sus APIs, y confirma que las nuevas misiones FinOps no requieren que AWS cambie nada: operan sobre los datos que la plataforma ya recopila.
 
@@ -217,7 +217,7 @@ AWS es un actor externo que no inicia ninguna interacción: responde a las llama
 | :--- | :--- |
 | ![CU AWS](./CdU/AWS/AWS.svg) | [Ver código PlantUML](./CdU/AWS/AWS.puml) |
 
-## 4.6 Diagrama de contexto de las nuevas misiones
+## 3.13 Diagrama de contexto de las nuevas misiones
 
 Este es el diagrama más útil para entender cómo encajan los casos de uso en el tiempo. Mientras los diagramas de la sección anterior muestran qué puede hacer cada actor, este muestra cuándo: los estados por los que pasa el sistema desde que un usuario se autentica hasta que el ciclo de optimización está activo. El punto de entrada es CU-04 (autenticación), tras el cual CU-01 y CU-02 configuran la plataforma base. Solo entonces es posible activar el dashboard (CU-07) y, a partir de ahí, la monitorización continua y la optimización. Una vez en marcha, el ciclo se retroalimenta periódicamente gracias al Actor Tiempo.
 
@@ -225,7 +225,7 @@ Este es el diagrama más útil para entender cómo encajan los casos de uso en e
 | :--- | :--- |
 | ![Diagrama de Contexto](./CdU/DiagramaContexto/Contexto.svg) | [Ver código PlantUML](./CdU/DiagramaContexto/Contexto.puml) |
 
-## 4.7 Detalle de las nuevas misiones Must y Should (CU-07 a CU-11)
+## 3.14 Detalle de las nuevas misiones Must y Should (CU-07 a CU-11)
 
 ### CU-07 — Dashboard consolidado de costes IA
 
@@ -331,7 +331,7 @@ Este es el diagrama más útil para entender cómo encajan los casos de uso en e
 
 ---
 
-## 4.8 Trazabilidad Casos de Uso × Pantalla × API
+## 3.15 Trazabilidad Casos de Uso × Pantalla × API
 
 Los CU-01 a CU-06 corresponden a endpoints ya implementados en la plataforma base. Los CU-07 a CU-15 son los endpoints que se diseñarán e implementarán en este TFG.
 
@@ -353,7 +353,7 @@ Los CU-01 a CU-06 corresponden a endpoints ya implementados en la plataforma bas
 | CU-14 Informe de consumo IA | `/reports` | `GET /reports/consumption` |
 | CU-15 Consolidación de agentes | `/agents` | `GET /agents/consolidation` |
 
-## 4.9 Marco de Decisiones Estratégicas FinOps (F1–F11)
+## 3.16 Marco de Decisiones Estratégicas FinOps (F1–F11)
 
 El framework de gobernanza propio de Theia Officer organiza el control financiero de la IA en once preguntas estratégicas que el CAIO Virtual evalúa para cada organización. Cada decisión se mapea a misiones concretas del catálogo.
 

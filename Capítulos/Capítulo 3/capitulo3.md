@@ -1,16 +1,16 @@
-# 5. Disciplina de Análisis
+# 4. Disciplina de Análisis y Diseño
 
-## 5.1 Introducción
+## 4.1 Introducción
 
 La disciplina de análisis toma como punto de partida el modelo de dominio y los casos de uso definidos en el capítulo 2. Su objetivo no es repetir qué necesita el usuario, sino refinar esos requisitos con un lenguaje más cercano al desarrollo: arquitectura, colaboraciones entre componentes, clases conceptuales y organización lógica del módulo.
 
 En este TFG el sistema no se desarrolla desde cero. Theia Officer ya existe como plataforma de gobierno de agentes de IA y este trabajo se centra en una parte concreta: el módulo FinOps para visibilidad y control financiero de agentes de IA en AWS. Por tanto, el análisis no redefine la aplicación completa, sino que estudia cómo encajan las capacidades financieras dentro de la arquitectura existente.
 
-El capítulo 2 prioriza los nuevos casos de uso FinOps mediante MoSCoW. CU-07 y CU-08 aparecen como Must, CU-09 a CU-11 como Should y CU-12 a CU-13 como Could. En este capítulo se analizan todos ellos, pero con distinto nivel de profundidad: CU-07 se detalla por ser la base de datos, pantallas y agregaciones sobre las que se apoyan los demás; CU-08 se diseña de forma condicionada porque requiere histórico real; CU-09 a CU-13 se tratan como evolución del módulo.
+El capítulo 2 prioriza los nuevos casos de uso FinOps mediante MoSCoW. CU-07 y CU-08 aparecen como Must, CU-09 a CU-11 como Should y CU-12 a CU-13 como Could. En este apartado se analizan todos ellos, pero con distinto nivel de profundidad: CU-07 se detalla por ser la base de datos, pantallas y agregaciones sobre las que se apoyan los demás; CU-08 se diseña de forma condicionada porque requiere histórico real; CU-09 a CU-13 se tratan como evolución del módulo.
 
-## 5.2 Análisis de la arquitectura
+## 4.2 Análisis de la arquitectura
 
-### 5.2.1 Arquitectura existente de Theia Officer
+### 4.2.1 Arquitectura existente de Theia Officer
 
 Theia Officer utiliza una arquitectura por capas: frontend Next.js, backend FastAPI, servicios de dominio, repositorios de acceso a datos y modelos SQLAlchemy. Esta organización sigue el criterio de separación de responsabilidades recomendado por la arquitectura limpia [16]. La documentación técnica del proyecto describe el flujo general como `Frontend -> API -> Service -> Repository -> ORM`, con inyección de dependencias mediante `Depends()` [13] y sesiones de base de datos por petición mediante SQLAlchemy async [14].
 
@@ -25,7 +25,7 @@ El módulo FinOps debe respetar esa estructura para no introducir una arquitectu
 | Model | Persistencia ORM | Entidades financieras y relaciones con organización/agentes |
 | Integraciones | Conectores cloud y proveedores LLM | AWS Cost Explorer, Bedrock y proveedor LLM del CAIO |
 
-### 5.2.2 Encaje del módulo FinOps
+### 4.2.2 Encaje del módulo FinOps
 
 El módulo FinOps se apoya en entidades ya existentes de la plataforma: organizaciones, usuarios, credenciales cloud, agentes descubiertos, registros de auditoría y configuración LLM. La aportación del TFG consiste en añadir una vista financiera sobre esos elementos, no en sustituirlos.
 
@@ -42,7 +42,7 @@ Organización
 
 Este encaje permite que la visibilidad de costes se mantenga aislada por organización, reutilice credenciales ya configuradas y pueda evolucionar hacia otros proveedores cloud sin cambiar el modelo conceptual principal.
 
-### 5.2.3 Sistemas externos implicados
+### 4.2.3 Sistemas externos implicados
 
 El análisis identifica tres sistemas externos relevantes:
 
@@ -54,7 +54,7 @@ El análisis identifica tres sistemas externos relevantes:
 
 La distinción es importante: el CAIO Virtual aporta valor interpretando patrones y recomendaciones, pero la lectura de datos estructurados de facturación debe ser determinista y auditable.
 
-### 5.2.4 Flujo lógico de datos de facturación
+### 4.2.4 Flujo lógico de datos de facturación
 
 El flujo propuesto para los datos financieros es:
 
@@ -70,9 +70,9 @@ AWS Cost Explorer
 
 Cost Explorer tiene una latencia propia de facturación y actualiza los datos de coste al menos una vez cada 24 horas, dependiendo de los datos de facturación disponibles [17]. Por tanto, el módulo debe tratar los datos como históricos y no debe prometer monitorización en tiempo real basada únicamente en esta fuente.
 
-## 5.3 Análisis de casos de uso
+## 4.3 Análisis de casos de uso
 
-### 5.3.1 Priorización de casos de uso FinOps
+### 4.3.1 Priorización de casos de uso FinOps
 
 El capítulo 2 define los siguientes casos de uso nuevos:
 
@@ -84,9 +84,9 @@ El capítulo 2 define los siguientes casos de uso nuevos:
 
 CU-07 es la base operativa porque todos los casos posteriores dependen de disponer de datos de facturación normalizados. CU-08 también es Must, pero su diseño requiere histórico suficiente para evitar falsos positivos. CU-09 a CU-13 se analizan como ampliaciones coherentes del mismo modelo.
 
-### 5.3.2 CU-07 — Dashboard consolidado de costes IA
+### 4.3.2 CU-07 — Dashboard consolidado de costes IA
 
-CU-07 permite a un administrador o usuario regular consultar una vista consolidada de costes de IA. Según el capítulo 2, debe mostrar KPIs, desglose por agente y evolución temporal.
+CU-07 permite a un administrador o usuario regular consultar una vista consolidada de costes de IA. Según el capítulo anterior, debe mostrar KPIs, desglose por agente y evolución temporal.
 
 | Paso del caso de uso | Colaboración de análisis |
 |----------------------|--------------------------|
@@ -105,7 +105,7 @@ Escenarios relevantes:
 | Solo hay datos de un proveedor | Mostrar el proveedor disponible sin forzar comparación multi-cloud |
 | El CAIO no está disponible | Mostrar datos numéricos sin bloquear el dashboard |
 
-### 5.3.3 CU-08 — Detección de anomalías de gasto
+### 4.3.3 CU-08 — Detección de anomalías de gasto
 
 CU-08 detecta picos de gasto inusuales respecto al histórico. En análisis se identifica como un caso Must, pero dependiente de datos acumulados: sin varias semanas de registros reales, cualquier umbral estadístico sería arbitrario.
 
@@ -118,7 +118,7 @@ CU-08 detecta picos de gasto inusuales respecto al histórico. En análisis se i
 
 La decisión de análisis es no tratar CU-08 como una simple pantalla adicional. Es un proceso periódico que debe reutilizar `BillingData`, aplicar una regla estadística documentada y registrar el resultado de forma auditable.
 
-### 5.3.4 CU-09 a CU-13 — Casos de evolución
+### 4.3.4 CU-09 a CU-13 — Casos de evolución
 
 Los casos Should y Could se analizan para que el diseño de CU-07 no cierre puertas:
 
@@ -132,7 +132,7 @@ Los casos Should y Could se analizan para que el diseño de CU-07 no cierre puer
 
 Estos casos no necesitan el mismo nivel de secuencia que CU-07 en esta entrega, pero sí condicionan el diseño: la tabla de facturación debe ser temporal, multi-tenant, filtrable por proveedor y asociable a agentes.
 
-### 5.3.5 Trazabilidad CU × pantalla × API × modelo
+### 4.3.5 Trazabilidad CU × pantalla × API × modelo
 
 La siguiente tabla no afirma que todos los endpoints estén implementados. Define el contrato de diseño necesario para cubrir los casos de uso del módulo.
 
@@ -149,13 +149,13 @@ La siguiente tabla no afirma que todos los endpoints estén implementados. Defin
 | CU-12 Proyección | Dashboard / informe | `GET /billing/projection` | `BillingData` |
 | CU-13 Alertas | Configuración | `POST /billing/alerts` | configuración de umbrales |
 
-## 5.4 Análisis de clases
+## 4.4 Análisis de clases
 
-### 5.4.1 Identificación de clases Modelo, Vista y Controlador
+### 4.4.1 Identificación de clases Modelo, Vista y Controlador
 
-Siguiendo la guía del capítulo 3 y la separación habitual entre clases de análisis de tipo Modelo, Vista y Controlador [12], las clases se derivan del modelo de dominio y de los casos de uso.
+Siguiendo la guía de la disciplina de análisis y la separación habitual entre clases de análisis de tipo Modelo, Vista y Controlador [12], las clases se derivan del modelo de dominio y de los casos de uso.
 
-### 5.4.2 Clases modelo
+### 4.4.2 Clases modelo
 
 | Clase | Origen | Responsabilidad |
 |-------|--------|-----------------|
@@ -169,7 +169,7 @@ Siguiendo la guía del capítulo 3 y la separación habitual entre clases de an�
 No se añaden clases específicas para los casos que no forman parte del núcleo visualizado. CU-08 y
 CU-13 se mantienen como evolución del módulo, pero no necesitan ampliar este diagrama de análisis.
 
-### 5.4.3 Clases vista
+### 4.4.3 Clases vista
 
 | Clase vista | Actor | Casos de uso |
 |-------------|-------|--------------|
@@ -179,7 +179,7 @@ CU-13 se mantienen como evolución del módulo, pero no necesitan ampliar este d
 | `AgentCostTableView` | Administrador / Usuario Regular | CU-07, CU-09 |
 | `CostInsightsView` | Administrador / Usuario Regular | CU-07, CU-11 |
 
-### 5.4.4 Clases controlador
+### 4.4.4 Clases controlador
 
 | Clase controlador | Casos de uso | Responsabilidad |
 |-------------------|--------------|-----------------|
@@ -189,7 +189,7 @@ CU-13 se mantienen como evolución del módulo, pero no necesitan ampliar este d
 
 En el diseño técnico estas clases pueden materializarse como routers, servicios, hooks o tareas programadas. En análisis representan responsabilidades, no necesariamente clases físicas uno a uno.
 
-### 5.4.5 Diagrama de clases de análisis
+### 4.4.5 Diagrama de clases de análisis
 
 El diagrama PlantUML del análisis se muestra a continuación. Para que sea legible, usa nombres
 conceptuales en castellano; las tablas anteriores mantienen la nomenclatura técnica del proyecto.
@@ -198,9 +198,9 @@ conceptuales en castellano; las tablas anteriores mantienen la nomenclatura téc
 |----------|---------------|
 | ![Clases de análisis](./Analisis/ClasesAnalisis/ClasesAnalisis.svg) | [ClasesAnalisis.puml](./Analisis/ClasesAnalisis/ClasesAnalisis.puml) |
 
-## 5.5 Análisis de paquetes
+## 4.5 Análisis de paquetes
 
-### 5.5.1 Paquetes backend implicados
+### 4.5.1 Paquetes backend implicados
 
 | Paquete | Papel en el módulo FinOps |
 |---------|---------------------------|
@@ -210,7 +210,7 @@ conceptuales en castellano; las tablas anteriores mantienen la nomenclatura téc
 | `app/models/` | Entidades persistentes |
 | `app/schemas/` | Contratos Pydantic de entrada/salida |
 
-### 5.5.2 Paquetes frontend implicados
+### 4.5.2 Paquetes frontend implicados
 
 | Paquete | Papel en el módulo FinOps |
 |---------|---------------------------|
@@ -219,23 +219,19 @@ conceptuales en castellano; las tablas anteriores mantienen la nomenclatura téc
 | `src/hooks/` | Hooks de consulta y mutación |
 | `src/lib/` | Cliente API, tipos y utilidades |
 
-### 5.5.3 Dependencias con módulos existentes
+### 4.5.3 Dependencias con módulos existentes
 
 El módulo FinOps depende de autenticación, credenciales, agentes, auditoría y LLM. Esa dependencia es natural: el coste solo tiene sentido dentro de una organización autenticada, asociado a agentes descubiertos y, opcionalmente, interpretado por el CAIO Virtual.
 
----
-
-# 6. Disciplina de Diseño
-
-## 6.1 Introducción
+## 4.6 Introducción
 
 La disciplina de diseño transforma el análisis anterior en una solución técnica concreta. El diseño define arquitectura, contratos, clases de diseño, modelo físico y paquetes, preparando la implementación y las pruebas.
 
 El criterio principal es mantener bajo acoplamiento con la plataforma existente. Las decisiones deben ser suficientemente concretas para guiar el desarrollo, pero sin prometer funcionalidades que dependan de datos o componentes todavía no validados.
 
-## 6.2 Diseño de la arquitectura
+## 4.7 Diseño de la arquitectura
 
-### 6.2.1 Vista lógica del módulo FinOps
+### 4.7.1 Vista lógica del módulo FinOps
 
 La vista lógica propuesta es:
 
@@ -251,7 +247,7 @@ Frontend /costs
 
 El frontend no calcula reglas de negocio financieras; solo presenta datos y estados. El backend concentra agregaciones, sincronización, control de acceso y trazabilidad.
 
-### 6.2.2 Vista de despliegue
+### 4.7.2 Vista de despliegue
 
 El despliegue mantiene la forma general de Theia Officer: frontend Next.js, backend FastAPI y base de datos relacional, ejecutados en contenedores Docker durante el desarrollo. Las APIs externas se consumen desde el backend para no exponer credenciales cloud al navegador.
 
@@ -262,7 +258,7 @@ contenedores para mantener la vista centrada en las responsabilidades del módul
 |----------|---------------|
 | ![Diagrama de despliegue](./Diseño/Despliegue/Despliegue.svg) | [Despliegue.puml](./Diseño/Despliegue/Despliegue.puml) |
 
-### 6.2.3 Decisiones tecnológicas principales
+### 4.7.3 Decisiones tecnológicas principales
 
 | Decisión | Justificación |
 |----------|---------------|
@@ -273,7 +269,7 @@ contenedores para mantener la vista centrada en las responsabilidades del módul
 | LLM solo para interpretación | Evita usar razonamiento generativo para extraer datos tabulares |
 | TanStack Query en frontend | Coordina caché, estados de carga y refetch sin lógica manual excesiva [15] |
 
-### 6.2.4 Requisitos no funcionales y decisiones asociadas
+### 4.7.4 Requisitos no funcionales y decisiones asociadas
 
 | Requisito | Decisión de diseño |
 |-----------|--------------------|
@@ -285,9 +281,9 @@ contenedores para mantener la vista centrada en las responsabilidades del módul
 | Extensibilidad | Modelo con columna `provider` y servicios por proveedor |
 | Robustez | El fallo del LLM no debe impedir ver datos numéricos |
 
-## 6.3 Diseño de casos de uso
+## 4.8 Diseño de casos de uso
 
-### 6.3.1 Diseño detallado de CU-07
+### 4.8.1 Diseño detallado de CU-07
 
 CU-07 se diseña como un dashboard compuesto por varias consultas independientes. Esta separación permite que una parte de la interfaz pueda cargarse aunque otra tarde más o falle.
 
@@ -308,7 +304,7 @@ como lectura de costes para no duplicar el mismo recorrido API-servicio-reposito
 |----------|---------------|
 | ![Secuencia CU-07](./Diseño/Secuencias/DS-CU07.svg) | [DS-CU07.puml](./Diseño/Secuencias/DS-CU07.puml) |
 
-### 6.3.2 Diseño de la sincronización de costes
+### 4.8.2 Diseño de la sincronización de costes
 
 La sincronización es la operación que alimenta `BillingData`. Debe ser administrativa, auditable e idempotente.
 
@@ -327,7 +323,7 @@ Pasos de diseño:
 |----------|---------------|
 | ![Actividad de sincronización](./Diseño/Actividad/ActividadSync.svg) | [ActividadSync.puml](./Diseño/Actividad/ActividadSync.puml) |
 
-### 6.3.3 Tratamiento de CU-08 y dependencia de histórico
+### 4.8.3 Tratamiento de CU-08 y dependencia de histórico
 
 CU-08 no debe diseñarse como una simple llamada puntual. El diseño correcto es una tarea periódica que analiza series temporales acumuladas.
 
@@ -341,7 +337,7 @@ CU-08 no debe diseñarse como una simple llamada puntual. El diseño correcto es
 
 Por tanto, CU-08 queda preparado en el diseño, pero condicionado a disponer de datos reales suficientes para validar el algoritmo.
 
-### 6.3.4 Impacto de CU-09 a CU-13 en la evolución del módulo
+### 4.8.4 Impacto de CU-09 a CU-13 en la evolución del módulo
 
 | Caso | Impacto de diseño |
 |------|-------------------|
@@ -353,9 +349,9 @@ Por tanto, CU-08 queda preparado en el diseño, pero condicionado a disponer de 
 
 El diseño de datos de CU-07 debe permitir esta evolución sin rehacer la base financiera.
 
-## 6.4 Diseño de clases
+## 4.9 Diseño de clases
 
-### 6.4.1 Transformación de análisis a diseño
+### 4.9.1 Transformación de análisis a diseño
 
 Las clases de análisis se transforman en componentes técnicos:
 
@@ -367,7 +363,7 @@ Las clases de análisis se transforman en componentes técnicos:
 | Sistema externo AWS | Servicio de integración cloud |
 | Insight CAIO | Servicio LLM aplicado a datos agregados |
 
-### 6.4.2 Clases backend
+### 4.9.2 Clases backend
 
 | Clase / componente | Responsabilidad |
 |--------------------|-----------------|
@@ -378,7 +374,7 @@ Las clases de análisis se transforman en componentes técnicos:
 | Schemas Pydantic | Definir contratos de salida |
 | Router de billing | Exponer operaciones autenticadas bajo `/billing` |
 
-### 6.4.3 Componentes frontend
+### 4.9.3 Componentes frontend
 
 | Componente | Responsabilidad |
 |------------|-----------------|
@@ -389,7 +385,7 @@ Las clases de análisis se transforman en componentes técnicos:
 | `CostInsightsCard` | Mostrar análisis textual del CAIO |
 | Tabla de agentes | Mostrar coste atribuido por agente |
 
-### 6.4.4 Diagrama de clases de diseño
+### 4.9.4 Diagrama de clases de diseño
 
 El diagrama agrupa los endpoints de lectura de costes bajo `/billing/costs/*`. Esa agrupación
 incluye resumen, tendencia, desglose e insights, aunque en la tabla de contratos aparezcan
@@ -399,9 +395,9 @@ separados.
 |----------|---------------|
 | ![Clases de diseño](./Diseño/ClasesDiseño/ClasesDiseño.svg) | [ClasesDiseño.puml](./Diseño/ClasesDiseño/ClasesDiseño.puml) |
 
-## 6.5 Diseño de datos
+## 4.10 Diseño de datos
 
-### 6.5.1 Modelo físico
+### 4.10.1 Modelo físico
 
 La entidad central del diseño es `billing_data`. No sustituye al modelo de agentes ni al de organizaciones; los complementa con una vista temporal de coste.
 
@@ -409,7 +405,7 @@ La entidad central del diseño es `billing_data`. No sustituye al modelo de agen
 |----------|---------------|
 | ![Modelo entidad-relación](./Diseño/ModeloDatos/DER.svg) | [DER.puml](./Diseño/ModeloDatos/DER.puml) |
 
-### 6.5.2 Tabla `billing_data`
+### 4.10.2 Tabla `billing_data`
 
 | Campo | Papel de diseño |
 |-------|-----------------|
@@ -422,7 +418,7 @@ La entidad central del diseño es `billing_data`. No sustituye al modelo de agen
 | `service_name`, `usage_type` | Desglose técnico |
 | `synced_at` | Trazabilidad de sincronización |
 
-### 6.5.3 Relaciones e idempotencia
+### 4.10.3 Relaciones e idempotencia
 
 La clave de idempotencia propuesta es:
 
@@ -432,9 +428,9 @@ La clave de idempotencia propuesta es:
 
 Esto permite repetir una sincronización del mismo periodo sin crear duplicados. Si se aumenta la granularidad a nivel de token o invocación, será necesaria una ampliación del modelo porque Cost Explorer no proporciona ese detalle por sí solo.
 
-## 6.6 Diseño de paquetes
+## 4.11 Diseño de paquetes
 
-### 6.6.1 Paquetes backend
+### 4.11.1 Paquetes backend
 
 | Diagrama | Código fuente |
 |----------|---------------|
@@ -442,7 +438,7 @@ Esto permite repetir una sincronización del mismo periodo sin crear duplicados.
 
 El backend mantiene cohesión separando API, servicios, repositorios, modelos y schemas. Las integraciones externas quedan fuera del router para evitar que la capa HTTP conozca detalles de AWS.
 
-### 6.6.2 Paquetes frontend
+### 4.11.2 Paquetes frontend
 
 | Diagrama | Código fuente |
 |----------|---------------|
@@ -450,7 +446,7 @@ El backend mantiene cohesión separando API, servicios, repositorios, modelos y 
 
 El frontend agrupa la pantalla de costes, componentes visuales, hooks y cliente API. La lógica de obtención de datos se concentra en hooks para evitar duplicación en componentes.
 
-### 6.6.3 Cohesión y acoplamiento
+### 4.11.3 Cohesión y acoplamiento
 
 El diseño busca:
 
@@ -459,9 +455,9 @@ El diseño busca:
 - dependencia explícita de autenticación, agentes, credenciales y LLM;
 - posibilidad de añadir CU-08 a CU-13 sin rehacer CU-07.
 
-## 6.7 Diseño de interfaz
+## 4.12 Diseño de interfaz
 
-### 6.7.1 Estructura del dashboard de costes
+### 4.12.1 Estructura del dashboard de costes
 
 El dashboard de CU-07 se organiza en zonas:
 
@@ -473,7 +469,7 @@ El dashboard de CU-07 se organiza en zonas:
 | Insights | lectura ejecutiva generada por CAIO |
 | Tabla | detalle por agente o recurso |
 
-### 6.7.2 Estados de interfaz
+### 4.12.2 Estados de interfaz
 
 | Estado | Diseño esperado |
 |--------|-----------------|
@@ -483,6 +479,6 @@ El dashboard de CU-07 se organiza en zonas:
 | Datos disponibles | Vista agregada con filtros |
 | LLM no disponible | Se mantienen datos numéricos y se omite/reemplaza insight |
 
-### 6.7.3 Trazabilidad con prototipos del capítulo 2
+### 4.12.3 Trazabilidad con prototipos del apartado 3
 
 El prototipo de CU-07 del capítulo 2 se refina en este diseño mediante zonas funcionales. No se introduce una pantalla independiente para cada caso de evolución; CU-08 a CU-13 pueden reutilizar el dashboard o añadir vistas específicas cuando sus datos estén disponibles.
