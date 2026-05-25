@@ -1,0 +1,34 @@
+@startuml CU09_Colaboracion
+
+title CU-09 - Colaboracion MVC
+
+allowmixing
+
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor<<Vista>> #EAF2FF
+  BorderColor<<Vista>> #2F6FED
+  BackgroundColor<<Controlador>> #EEF8EA
+  BorderColor<<Controlador>> #4F8A3D
+  BackgroundColor<<Modelo>> #FFF4E5
+  BorderColor<<Modelo>> #C77C1A
+}
+
+actor "Administrador" as Admin
+actor "Actor Tiempo" as Tiempo
+class "Vista de Costes" as Vista <<Vista>>
+class "Controlador de Anomalias" as Ctrl <<Controlador>>
+class "Dato de Facturacion" as Fact <<Modelo>>
+class "Ejecucion de Anomalia" as Run <<Modelo>>
+class "Registro de Auditoria" as Audit <<Modelo>>
+
+Admin --> Vista : solicita revisar anomalias
+Tiempo --> Ctrl : inicia comprobacion periodica
+Vista --> Ctrl : pide evaluacion
+Ctrl --> Fact : construye linea base
+Ctrl --> Run : guarda ejecucion
+Ctrl --> Audit : registra evidencia
+Ctrl --> Vista : devuelve severidad y alcance
+Vista --> Admin : presenta resultado
+
+@enduml

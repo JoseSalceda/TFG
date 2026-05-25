@@ -1,0 +1,17 @@
+@startuml CU07_Especificacion
+
+title CU-07 - Consultar coste total de IA en AWS
+
+start
+:Actor solicita revisar coste total;
+:Sistema presenta periodo efectivo disponible;
+if (Acceso a informacion de costes?) then (si)
+  :Sistema calcula coste total;
+  :Sistema conserva gasto no asociado;
+  :Sistema muestra importe, moneda y periodo;
+else (no)
+  :Sistema informa condicion pendiente;
+endif
+stop
+
+@enduml

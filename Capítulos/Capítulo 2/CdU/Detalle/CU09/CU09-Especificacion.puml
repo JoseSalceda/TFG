@@ -1,0 +1,21 @@
+@startuml CU09_Especificacion
+
+title CU-09 - Detectar anomalias de gasto
+
+start
+:Administrador o Actor Tiempo solicita comprobacion;
+if (Hay historico suficiente?) then (si)
+  :Sistema construye linea base de 14 dias;
+  :Sistema compara el dia observado;
+  if (Hay desviacion relevante?) then (si)
+    :Sistema muestra anomalia y severidad;
+    :Sistema registra evidencia auditable;
+  else (no)
+    :Sistema registra comprobacion sin anomalias;
+  endif
+else (no)
+  :Sistema informa la condicion pendiente;
+endif
+stop
+
+@enduml

@@ -3,29 +3,47 @@
 skinparam classAttributeIconSize 0
 skinparam packageStyle rectangle
 
-title Clases de analisis - Modulo FinOps
+title Clases de analisis MVC - Modulo FinOps
+
+skinparam class {
+  BackgroundColor<<Vista>> #EAF2FF
+  BorderColor<<Vista>> #2F6FED
+  BackgroundColor<<Controlador>> #EEF8EA
+  BorderColor<<Controlador>> #4F8A3D
+  BackgroundColor<<Modelo>> #FFF4E5
+  BorderColor<<Modelo>> #C77C1A
+}
 
 package "Modelo" {
-  class Organizacion
-  class CredencialCloud
-  class AgenteIA
-  class DatoFacturacion
-  class RegistroUsoLLM
-  class RegistroAuditoria
+  class Organizacion <<Modelo>>
+  class CredencialCloud <<Modelo>>
+  class AgenteIA <<Modelo>>
+  class BaseConocimiento <<Modelo>>
+  class DatoFacturacion <<Modelo>>
+  class EjecucionAnomalia <<Modelo>>
+  class RegistroUsoLLM <<Modelo>>
+  class RegistroAuditoria <<Modelo>>
 }
 
 package "Vista" {
-  class DashboardCostes
-  class VistaKPIs
-  class VistaTendencia
-  class TablaCostesAgente
-  class VistaInsights
+  class VistaCostes <<Vista>>
+  class VistaCatalogoFinOps <<Vista>>
+  class VistaResumenCostes <<Vista>>
+  class VistaRankingAgentes <<Vista>>
+  class VistaAlertasAnomalia <<Vista>>
+  class VistaCosteLLM <<Vista>>
+  class VistaOptimizacionAgente <<Vista>>
+  class VistaAuditoria <<Vista>>
 }
 
 package "Controlador" {
-  class ControladorDashboard
-  class ControladorSincronizacion
-  class ControladorInsights
+  class ControladorCosteTotal <<Controlador>>
+  class ControladorAtribucionAgente <<Controlador>>
+  class ControladorAnomalias <<Controlador>>
+  class ControladorObservabilidadLLM <<Controlador>>
+  class ControladorOptimizacionRAG <<Controlador>>
+  class ControladorPromptCaching <<Controlador>>
+  class ControladorSincronizacion <<Controlador>>
 }
 
 Organizacion "1" -- "0..*" CredencialCloud
@@ -33,19 +51,37 @@ Organizacion "1" -- "0..*" AgenteIA
 Organizacion "1" -- "0..*" DatoFacturacion
 Organizacion "1" -- "0..*" RegistroUsoLLM
 Organizacion "1" -- "0..*" RegistroAuditoria
+Organizacion "1" -- "0..*" EjecucionAnomalia
 
 AgenteIA "0..1" -- "0..*" DatoFacturacion
+AgenteIA "0..*" -- "0..*" BaseConocimiento
 
-DashboardCostes --> ControladorDashboard
-DashboardCostes --> ControladorSincronizacion
-VistaKPIs --> DatoFacturacion
-VistaTendencia --> DatoFacturacion
-TablaCostesAgente --> AgenteIA
-VistaInsights --> ControladorInsights
+VistaCatalogoFinOps --> VistaCostes
+VistaCostes --> ControladorCosteTotal
+VistaCostes --> ControladorAtribucionAgente
+VistaCostes --> ControladorAnomalias
+VistaCostes --> ControladorObservabilidadLLM
+VistaCostes --> ControladorOptimizacionRAG
+VistaCostes --> ControladorPromptCaching
+VistaResumenCostes --> DatoFacturacion
+VistaRankingAgentes --> AgenteIA
+VistaAlertasAnomalia --> ControladorAnomalias
+VistaCosteLLM --> RegistroUsoLLM
+VistaOptimizacionAgente --> AgenteIA
+VistaAuditoria --> RegistroAuditoria
 
-ControladorDashboard --> DatoFacturacion
+ControladorCosteTotal --> DatoFacturacion
+ControladorAtribucionAgente --> DatoFacturacion
+ControladorAtribucionAgente --> AgenteIA
 ControladorSincronizacion --> CredencialCloud
 ControladorSincronizacion --> RegistroAuditoria
-ControladorInsights --> RegistroUsoLLM
+ControladorAnomalias --> DatoFacturacion
+ControladorAnomalias --> EjecucionAnomalia
+ControladorAnomalias --> RegistroAuditoria
+ControladorObservabilidadLLM --> RegistroUsoLLM
+ControladorOptimizacionRAG --> AgenteIA
+ControladorOptimizacionRAG --> BaseConocimiento
+ControladorPromptCaching --> AgenteIA
+ControladorPromptCaching --> RegistroAuditoria
 
 @enduml

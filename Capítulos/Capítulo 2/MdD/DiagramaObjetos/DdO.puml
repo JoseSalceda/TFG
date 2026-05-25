@@ -35,13 +35,14 @@ object "agent2 : AgenteIA" as agent2 {
 }
 
 object "mission1 : MisionFinOps" as mission1 {
-  tipo = "cost-tracking-aws"
-  estado = "monitoring"
-  ciclo_vida = "ongoing"
-  intervalo_sync = "24h"
+  mission_id = "cost-total-aws"
+  titulo = "Coste total AWS"
+  estado_usuario = "complete"
+  pantalla_revision = "Costs"
 }
 
 object "billing1 : DatoFacturacion" as billing1 {
+  proveedor = "aws"
   recurso_id = "agent-id-001"
   coste = 45.30
   moneda = "USD"
@@ -49,6 +50,7 @@ object "billing1 : DatoFacturacion" as billing1 {
 }
 
 object "billing2 : DatoFacturacion" as billing2 {
+  proveedor = "aws"
   recurso_id = "agent-id-002"
   coste = 12.80
   moneda = "USD"
@@ -70,28 +72,23 @@ object "config1 : ConfiguracionLLM" as config1 {
 }
 
 object "audit1 : RegistroAuditoria" as audit1 {
-  accion = "mission_created"
+  accion = "billing_sync_completed"
   tipo_recurso = "MisionFinOps"
   recurso_id = "mission-001"
-}
-
-object "evento1 : EventoPermiso" as evento1 {
-  accion = "attach"
-  rol_IAM = "BedrockReadOnly"
-  accion_automatica = true
 }
 
 org1 --> admin1
 org1 --> cred1
 org1 --> mission1
+org1 --> billing1
+org1 --> billing2
 org1 --> llmLog1
 org1 --> config1
 org1 --> audit1
 cred1 --> agent1
 cred1 --> agent2
-cred1 --> mission1
 agent1 --> billing1
 agent2 --> billing2
-mission1 --> evento1
+mission1 --> audit1
 
 @enduml

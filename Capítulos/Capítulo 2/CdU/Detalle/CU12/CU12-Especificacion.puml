@@ -1,0 +1,19 @@
+@startuml CU12_Especificacion
+
+title CU-12 - Prompt caching controlado
+
+start
+:Actor solicita evaluar prompt caching;
+:Sistema revisa elegibilidad;
+:Sistema ejecuta simulacion previa;
+if (Agente compatible y administrador confirma?) then (si)
+  :Sistema aplica cambio condicionado;
+  :Sistema registra auditoria;
+  :Sistema muestra estado final;
+else (no)
+  :Sistema conserva solo la simulacion;
+  :Sistema muestra motivo de bloqueo o cancelacion;
+endif
+stop
+
+@enduml

@@ -3,22 +3,25 @@ hide empty description
 
 [*] --> pending : Mision creada
 
-pending --> in_progress : Roles IAM adjuntados
+pending --> ready : Disponible en catalogo
 
-in_progress --> partial_complete : Algunos proyectos completados
-in_progress --> complete : Todos los proyectos completados (quick)
-in_progress --> failed : Error irrecuperable
-in_progress --> rolled_back : Rollback manual
+ready --> preparing : Usuario inicia recorrido
+preparing --> analyzing : Verificaciones iniciales
+analyzing --> in_progress : Datos o accion disponibles
 
-partial_complete --> waiting_reduction : Roles mission reducidos
-complete --> waiting_reduction : Roles mission reducidos
+in_progress --> waiting : Falta dato externo o confirmacion
+waiting --> in_progress : Condicion resuelta
 
-waiting_reduction --> monitoring : Mision ongoing activada
-monitoring --> degraded : Health check fallido
-degraded --> monitoring : Health check recuperado
+in_progress --> complete : Evidencia revisada
+in_progress --> failed : Error recuperable no resuelto
+waiting --> failed : Condicion expirada
+
+complete --> active : Mision ongoing activada
+active --> degraded : Health check fallido
+degraded --> active : Health check recuperado
 
 failed --> [*]
-rolled_back --> [*]
-monitoring --> [*] : Mision cancelada
+complete --> [*]
+active --> [*] : Mision cancelada
 
 @enduml

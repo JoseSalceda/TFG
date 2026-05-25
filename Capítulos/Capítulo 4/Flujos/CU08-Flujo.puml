@@ -1,0 +1,62 @@
+@startuml CU08_Flujo
+
+title CU-08 - Consultar coste por agente de IA en AWS
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  DiamondBackgroundColor #FEF3C7
+  DiamondBorderColor #92400E
+  StartColor #16A34A
+  EndColor #16A34A
+}
+skinparam note {
+  BackgroundColor #FFF7ED
+  BorderColor #EA580C
+}
+
+start
+
+partition "Usuario" {
+  :Abrir Misiones -> FinOps;
+  :Seleccionar CU-08;
+}
+
+partition "AWS" {
+  :Uso Bedrock con senal theia-agent-id;
+  :Cost allocation tag activada;
+  :Cost Explorer publica datos por etiqueta;
+}
+
+partition "Backend" {
+  :Leer registros Bedrock sincronizados;
+  if ("Registro con agent_id?") then ("si")
+    :Asociar coste al agente interno;
+  else ("no")
+    :Conservar coste como unmatched_cost;
+  endif
+  :Agregar coste por agente;
+}
+
+note right
+  AWS no atribuye automaticamente el coste
+  al recurso agente Bedrock. Theia solo usa
+  la senal visible cuando existe.
+end note
+
+partition "Costs" {
+  :Consultar GET /api/v1/billing/agents;
+  :Mostrar ranking por agente;
+  :Mostrar coste no asociado separado;
+}
+
+partition "Usuario" {
+  :Revisar atribucion y coste no asociado;
+  :Completar la mision;
+}
+
+stop
+
+@enduml

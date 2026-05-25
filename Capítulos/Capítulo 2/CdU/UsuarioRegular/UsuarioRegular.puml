@@ -4,20 +4,28 @@ skinparam packageStyle rectangle
 
 actor "Usuario Regular" as Regular
 
-rectangle "Sistema Theia Officer - Modulo FinOps AWS" {
+rectangle "Sistema de Gobierno IA - Modulo FinOps AWS" {
   rectangle "Plataforma base (Theia Craft)" {
     usecase "CU-04\nAutenticarse" as CU04
   }
   rectangle "Nuevas misiones FinOps (TFG)" {
-    usecase "CU-07\nDashboard consolidado de costes IA" as CU07
-    usecase "CU-10\nVisibilidad coste LLM plataforma" as CU10
-    usecase "CU-12\nProyectar tendencia de costes" as CU12
+    usecase "CU-07\nCoste total de IA" as CU07
+    usecase "CU-08\nCoste por agente de IA" as CU08
+    usecase "CU-09\nConsultar anomalias" as CU09
+    usecase "CU-10\nCoste LLM estimado CAIO" as CU10
+    usecase "CU-11\nSimular recuperacion RAG" as CU11
+    usecase "CU-12\nRevisar prompt caching" as CU12
+    usecase "CU-13\nProyectar tendencia (futuro)" as CU13
   }
 }
 
 Regular --> CU04
 Regular --> CU07
+Regular --> CU08
+Regular --> CU09
 Regular --> CU10
+Regular --> CU11
 Regular --> CU12
+Regular ..> CU13
 
 @enduml

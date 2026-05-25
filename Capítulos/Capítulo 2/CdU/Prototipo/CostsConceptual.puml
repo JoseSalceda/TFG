@@ -1,0 +1,32 @@
+@startuml CostsConceptual
+
+title Prototipo conceptual - Vista de costes FinOps
+
+skinparam shadowing false
+skinparam rectangle {
+  RoundCorner 8
+  BorderColor #334155
+  FontSize 12
+}
+
+rectangle "Vista de costes FinOps" as Vista #F8FAFC {
+  rectangle "Resumen AWS Bedrock\nCU-07\nCoste total, moneda y periodo" as CU07 #EAF2FF
+  rectangle "Coste por agente\nCU-08\nRanking y coste no asociado" as CU08 #EAF2FF
+  rectangle "Anomalias\nCU-09\nSeveridad, linea base y evidencia" as CU09 #FFF4E5
+  rectangle "Coste LLM estimado\nCU-10\nTokens, llamadas y coste interno" as CU10 #EEF8EA
+  rectangle "Optimizacion RAG\nCU-11\nPerfil, fragmentos y prueba controlada" as CU11 #F3E8FF
+  rectangle "Prompt caching\nCU-12\nElegibilidad, simulacion y confirmacion" as CU12 #F3E8FF
+}
+
+CU07 -[hidden]right- CU08
+CU08 -[hidden]right- CU09
+CU10 -[hidden]right- CU11
+CU11 -[hidden]right- CU12
+CU07 -[hidden]down- CU10
+
+note bottom of Vista
+El prototipo muestra la concentracion funcional en una sola vista.
+Las capturas reales de interfaz se documentan en el capitulo de solucion.
+end note
+
+@enduml

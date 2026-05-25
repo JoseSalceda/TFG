@@ -1,0 +1,59 @@
+@startuml DS-CU09
+
+title Secuencia - CU-09 Deteccion de anomalias de gasto
+
+actor Usuario
+actor Administrador
+participant "Frontend /costs" as UI
+participant "Hook useBillingAnomalies" as Hooks
+participant "Billing API" as API
+participant "BillingService" as Service
+participant "BillingRepository" as Repo
+participant "AuditLog" as Audit
+participant "BillingAnomalyRun" as Run
+participant "AWS Cost Anomaly Detection" as AWS
+
+Usuario -> UI : abre Costs y revisa anomalias
+UI -> Hooks : solicita anomalias calculadas
+Hooks -> API : GET /api/v1/billing/anomalies
+API -> Service : get_anomalies(org_id)
+Service -> Repo : consultar anomalias persistidas
+Repo --> Service : resultados disponibles
+Service --> API : anomalias y periodo efectivo
+API --> Hooks : JSON
+Hooks --> UI : muestra anomalias calculadas
+
+opt Ejecucion auditable fuera de la lectura de Costs
+Administrador -> UI : ejecuta detector
+UI -> Hooks : runAnomalyCheck()
+Hooks -> API : POST /api/v1/billing/anomalies/run
+API -> Service : run_anomaly_check(org_id)
+Service -> Repo : consultar 14 dias base + dia observado
+Repo --> Service : billing_data Bedrock
+
+  alt Historico insuficiente
+    Service --> API : has_sufficient_history=false
+    API --> Hooks : sin alertas nuevas
+    Hooks --> UI : explica requisito temporal
+  else Historico suficiente
+    Service -> Run : comprobar run org+dia+trigger
+    alt Run ya existe
+      Run --> Service : audit_log_ids previos
+      Service --> API : respuesta idempotente
+    else Run nuevo
+      Service -> Service : detectar total, agente y unmatched
+      opt Senal AWS opcional
+        Service -> AWS : GetAnomalies
+        AWS --> Service : anomalias o error no bloqueante
+      end
+      Service -> Audit : billing_anomaly_check_completed
+      Service -> Audit : billing_anomaly_detected*
+      Service -> Run : guardar audit_log_ids
+      Service --> API : alertas + auditoria
+    end
+    API --> Hooks : JSON
+    Hooks --> UI : refresca alertas y auditoria
+  end
+end
+
+@enduml

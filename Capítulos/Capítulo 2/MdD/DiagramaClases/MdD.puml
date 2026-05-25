@@ -36,28 +36,21 @@ class AgenteIA {
   region
   modelo_fundacional
   rol_ARN
-  endpoint
+  punto_acceso
 }
 
 class MisionFinOps {
-  tipo_mision
-  estado
-  ciclo_vida
-  intervalo_sync_horas
-  tipos_alerta
-  canales_notificacion
-  ultimo_sync
-}
-
-class EventoPermiso {
-  accion
-  rol_IAM
-  tipo_permiso
-  confirmado_usuario: bool
-  accion_automatica: bool
+  mission_id
+  titulo
+  estado_usuario
+  progreso
+  pantalla_revision: Costs
+  ultimo_cambio
 }
 
 class DatoFacturacion {
+  agente_asociado: opcional
+  proveedor
   recurso_id
   periodo_inicio
   periodo_fin
@@ -79,7 +72,7 @@ class RegistroUsoLLM {
 class ConfiguracionLLM {
   proveedor
   modelo
-  endpoint
+  punto_acceso
   clave_cifrada
   rol_asignado
 }
@@ -96,14 +89,13 @@ Organizacion "1" --> "0..*" CredencialAWS : posee
 Organizacion "1" --> "0..*" MisionFinOps : lanza
 Organizacion "1" --> "0..*" ConfiguracionLLM : configura
 Organizacion "1" --> "0..*" RegistroUsoLLM : acumula
+Organizacion "1" --> "0..*" DatoFacturacion : acumula
 Organizacion "1" --> "0..*" RegistroAuditoria : registra
 
 CredencialAWS "1" --> "0..*" AgenteIA : descubre
-CredencialAWS "1" --> "0..*" MisionFinOps : autoriza
+MisionFinOps "0..*" --> "0..*" RegistroAuditoria : deja evidencia
 
-MisionFinOps "1" --> "0..*" EventoPermiso : genera
-
-AgenteIA "1" --> "0..*" DatoFacturacion : tiene
+AgenteIA "0..1" <-- "0..*" DatoFacturacion : atribuido si existe
 
 ConfiguracionLLM "1" --> "0..*" RegistroUsoLLM : genera
 

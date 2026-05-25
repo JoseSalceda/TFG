@@ -1,0 +1,30 @@
+@startuml CU07_Colaboracion
+
+title CU-07 - Colaboracion MVC
+
+allowmixing
+
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor<<Vista>> #EAF2FF
+  BorderColor<<Vista>> #2F6FED
+  BackgroundColor<<Controlador>> #EEF8EA
+  BorderColor<<Controlador>> #4F8A3D
+  BackgroundColor<<Modelo>> #FFF4E5
+  BorderColor<<Modelo>> #C77C1A
+}
+
+actor "Administrador / Usuario Regular" as Usuario
+class "Vista de Costes" as Vista <<Vista>>
+class "Controlador de Coste Total" as Ctrl <<Controlador>>
+class "Dato de Facturacion" as Fact <<Modelo>>
+class "Registro de Auditoria" as Audit <<Modelo>>
+
+Usuario --> Vista : solicita coste total
+Vista --> Ctrl : pide total del periodo
+Ctrl --> Fact : agrega importes
+Ctrl --> Audit : registra operacion cuando procede
+Ctrl --> Vista : devuelve total y coste no asociado
+Vista --> Usuario : presenta resultado
+
+@enduml

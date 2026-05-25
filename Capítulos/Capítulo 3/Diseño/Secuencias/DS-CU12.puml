@@ -1,0 +1,48 @@
+@startuml DS-CU12
+title DS-CU12 - Prompt caching controlado en agentes Bedrock
+
+actor "Usuario autorizado" as Usuario
+actor Administrador
+participant "Frontend /costs" as FE
+participant "Agents API" as API
+participant "BedrockAgentOptimizationService" as Service
+database "Agent" as Agent
+database "AuditLog" as Audit
+participant "AWS Bedrock Agents" as AWS
+
+Usuario -> FE : Selecciona agente y estado deseado
+FE -> API : GET /api/v1/agents/{agent_id}/prompt-cache
+API -> Service : get_prompt_cache_status(agent_id, org)
+Service -> Agent : cargar agente de la organizacion
+Service -> AWS : GetAgent
+AWS --> Service : configuracion actual
+Service --> API : elegibilidad, estado y limitaciones
+API --> FE : estado CU-12
+
+Usuario -> FE : Ejecutar dry-run
+FE -> API : POST /api/v1/agents/{agent_id}/prompt-cache/simulate
+API -> Service : simulate_prompt_cache(desired_state)
+Service -> Service : validar candidato sin mutar AWS
+Service -> Audit : prompt_cache_dry_run
+Service --> API : would_update y notas
+API --> FE : simulacion
+
+opt confirmacion administrativa
+  Administrador -> FE : Confirmar apply
+  FE -> API : POST /api/v1/agents/{agent_id}/prompt-cache/apply
+  API -> Service : apply_prompt_cache(confirm=true)
+  Service -> AWS : GetAgent
+  alt promptConfigurations existe
+    Service -> Service : conservar campos y cambiar solo promptCachingState
+    Service -> AWS : UpdateAgent
+    Service -> AWS : PrepareAgent
+    Service -> Audit : activacion/desactivacion
+    Service --> API : estado final
+  else falta configuracion avanzada
+    Service -> Audit : error auditado sin mutar AWS
+    Service --> API : prerequisito no cumplido
+  end
+  API --> FE : resultado auditado
+end
+
+@enduml

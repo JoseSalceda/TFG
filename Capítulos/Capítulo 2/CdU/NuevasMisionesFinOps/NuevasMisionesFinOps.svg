@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="980" viewBox="0 0 1500 980">
+  <defs>
+    <style>
+      .bg{fill:#fff}.frame{fill:#f8fafc;stroke:#334155;stroke-width:2}.must{fill:#ecfdf5;stroke:#047857;stroke-width:1.5}.should{fill:#eff6ff;stroke:#1d4ed8;stroke-width:1.5}.future{fill:#fff7ed;stroke:#c2410c;stroke-width:1.5}.actor{fill:#f1f5f9;stroke:#475569;stroke-width:1.5}.aws{fill:#fef3c7;stroke:#b45309;stroke-width:1.5}.uc{fill:#fff;stroke:#475569;stroke-width:1.4}.txt{font-family:Arial,Helvetica,sans-serif;fill:#0f172a}.title{font-size:31px;font-weight:700}.sub{font-size:17px;fill:#475569}.group{font-size:20px;font-weight:700}.small{font-size:17px}.line{stroke:#64748b;stroke-width:2;fill:none}
+    </style>
+  </defs>
+  <rect class="bg" width="1500" height="980"/>
+  <text class="txt title" x="750" y="45" text-anchor="middle">Entorno Nuevas Misiones FinOps (TFG)</text>
+  <text class="txt sub" x="750" y="75" text-anchor="middle">Casos de uso de visibilidad, observabilidad y optimizacion de costes de IA</text>
+  <rect class="frame" x="230" y="110" width="1040" height="780" rx="20"/>
+  <g class="txt small">
+    <rect class="actor" x="45" y="160" width="150" height="58" rx="10"/><text x="120" y="195" text-anchor="middle">Administrador</text>
+    <rect class="actor" x="45" y="350" width="150" height="58" rx="10"/><text x="120" y="385" text-anchor="middle">Usuario Regular</text>
+    <rect class="actor" x="45" y="540" width="150" height="58" rx="10"/><text x="120" y="575" text-anchor="middle">Actor Tiempo</text>
+    <rect class="actor" x="1305" y="265" width="150" height="58" rx="10"/><text x="1380" y="300" text-anchor="middle">CAIO Virtual</text>
+    <rect class="aws" x="1305" y="535" width="150" height="58" rx="10"/><text x="1380" y="570" text-anchor="middle">AWS</text>
+  </g>
+  <rect class="must" x="275" y="145" width="300" height="280" rx="16"/><text class="txt group" x="425" y="178" text-anchor="middle">Must - visibilidad</text>
+  <rect class="should" x="600" y="145" width="300" height="280" rx="16"/><text class="txt group" x="750" y="178" text-anchor="middle">Should - optimizacion</text>
+  <rect class="future" x="925" y="145" width="300" height="445" rx="16"/><text class="txt group" x="1075" y="178" text-anchor="middle">Evolucion futura</text>
+  <g class="txt small">
+    <rect class="uc" x="315" y="215" width="220" height="58" rx="29"/><text x="425" y="239" text-anchor="middle">CU-07</text><text x="425" y="261" text-anchor="middle">Coste total IA</text>
+    <rect class="uc" x="315" y="300" width="220" height="58" rx="29"/><text x="425" y="324" text-anchor="middle">CU-08</text><text x="425" y="346" text-anchor="middle">Coste por agente</text>
+    <rect class="uc" x="315" y="385" width="220" height="58" rx="29"/><text x="425" y="409" text-anchor="middle">CU-09</text><text x="425" y="431" text-anchor="middle">Anomalias de gasto</text>
+    <rect class="uc" x="640" y="215" width="220" height="58" rx="29"/><text x="750" y="239" text-anchor="middle">CU-10</text><text x="750" y="261" text-anchor="middle">Coste LLM estimado</text>
+    <rect class="uc" x="640" y="300" width="220" height="58" rx="29"/><text x="750" y="324" text-anchor="middle">CU-11</text><text x="750" y="346" text-anchor="middle">Optimizar RAG</text>
+    <rect class="uc" x="640" y="385" width="220" height="58" rx="29"/><text x="750" y="409" text-anchor="middle">CU-12</text><text x="750" y="431" text-anchor="middle">Prompt caching</text>
+    <rect class="uc" x="965" y="215" width="220" height="58" rx="29"/><text x="1075" y="239" text-anchor="middle">CU-13</text><text x="1075" y="261" text-anchor="middle">Proyectar tendencia</text>
+    <rect class="uc" x="965" y="300" width="220" height="58" rx="29"/><text x="1075" y="324" text-anchor="middle">CU-14</text><text x="1075" y="346" text-anchor="middle">Alertas de umbral</text>
+    <rect class="uc" x="965" y="385" width="220" height="58" rx="29"/><text x="1075" y="409" text-anchor="middle">CU-15</text><text x="1075" y="431" text-anchor="middle">Informe consumo IA</text>
+    <rect class="uc" x="965" y="470" width="220" height="58" rx="29"/><text x="1075" y="494" text-anchor="middle">CU-16</text><text x="1075" y="516" text-anchor="middle">Consolidar agentes</text>
+  </g>
+  <path class="line" d="M195 189 C250 190 280 215 315 244"/>
+  <path class="line" d="M195 189 C260 250 285 300 315 329"/>
+  <path class="line" d="M195 189 C275 325 290 380 315 414"/>
+  <path class="line" d="M195 189 C380 190 500 205 640 244"/>
+  <path class="line" d="M195 189 C420 230 515 290 640 329"/>
+  <path class="line" d="M195 189 C425 285 520 370 640 414"/>
+  <path class="line" d="M195 379 C250 300 280 260 315 244"/>
+  <path class="line" d="M195 379 C250 350 280 335 315 329"/>
+  <path class="line" d="M195 379 C430 345 520 330 640 329"/>
+  <path class="line" d="M195 569 C250 500 285 430 315 414"/>
+  <path class="line" d="M1305 294 C1240 350 1205 450 1185 499"/>
+  <path class="line" d="M1305 564 C1200 520 1025 450 860 414"/>
+  <path class="line" d="M1305 564 C1070 505 780 355 535 329"/>
+  <path class="line" d="M1305 564 C1080 450 775 270 535 244"/>
+  <text class="txt sub" x="750" y="925" text-anchor="middle">CU-07 a CU-12 forman el alcance implementado o verificable; CU-13 a CU-16 quedan como lineas de evolucion.</text>
+</svg>

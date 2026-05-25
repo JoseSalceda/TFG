@@ -8,30 +8,31 @@ package "app/(dashboard)/costs" {
   component "page.tsx" as Page
 }
 
-package "components/costs" {
-  component "KPIs" as KPIs
-  component "TrendChart" as Trend
-  component "Breakdown" as Breakdown
-  component "Insights" as Insights
-  component "AgentTable" as Table
-}
-
 package "hooks" {
-  component "useBilling" as Hook
+  component "use-billing.ts" as BillingHook
+  component "use-llm-costs.ts" as LLMHook
+  component "use-agent-optimization.ts" as OptimizationHook
+  component "use-agents.ts" as AgentsHook
+  component "use-missions.ts" as MissionsHook
 }
 
 package "lib" {
-  component "api-client" as Api
-  component "types" as Types
+  component "api-client.ts" as Api
+  component "missions.ts" as Missions
+  component "types.ts" as Types
 }
 
-Page --> KPIs
-Page --> Trend
-Page --> Breakdown
-Page --> Insights
-Page --> Table
-Page --> Hook
-Hook --> Api
-Hook --> Types
+Page --> BillingHook
+Page --> LLMHook
+Page --> OptimizationHook
+Page --> AgentsHook
+Page --> MissionsHook
+Page --> Missions
+Page --> Types
+BillingHook --> Api
+LLMHook --> Api
+OptimizationHook --> Api
+AgentsHook --> Api
+MissionsHook --> Api
 
 @enduml

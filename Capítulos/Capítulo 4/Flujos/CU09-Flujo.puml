@@ -1,0 +1,73 @@
+@startuml CU09_Flujo
+
+title CU-09 - Detectar anomalias de gasto
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  DiamondBackgroundColor #FEF3C7
+  DiamondBorderColor #92400E
+  StartColor #16A34A
+  EndColor #16A34A
+}
+skinparam note {
+  BackgroundColor #FFF7ED
+  BorderColor #EA580C
+}
+
+start
+
+partition "Usuario o Actor Tiempo" {
+  :Solicitar revision de anomalias;
+}
+
+partition "Costs" {
+  :Consultar GET /api/v1/billing/anomalies;
+  :Mostrar anomalias ya calculadas;
+}
+
+if ("Se ejecuta detector auditable?") then ("no")
+  stop
+else ("si")
+endif
+
+partition "Backend" {
+  :Recibir POST /api/v1/billing/anomalies/run;
+  :Leer billing_data de Amazon Bedrock;
+  :Construir series diarias por ambito;
+}
+
+if ("Hay 14 dias previos y dia observado?") then ("no")
+  :Informar historico insuficiente;
+  stop
+else ("si")
+endif
+
+partition "Detector local" {
+  :Calcular media de 14 dias;
+  :Calcular desviacion tipica;
+  :Calcular umbral de anomalia;
+  :Comparar dia observado;
+}
+
+if ("Se detecta desviacion relevante?") then ("si")
+  :Crear alerta con severidad;
+else ("no")
+  :Devolver revision sin alerta;
+endif
+
+partition "Auditoria" {
+  :Registrar ejecucion del detector;
+  :Evitar duplicados por dia y trigger;
+}
+
+partition "Costs" {
+  :Refrescar GET /api/v1/billing/anomalies;
+  :Mostrar baseline, umbral e impacto;
+}
+
+stop
+
+@enduml

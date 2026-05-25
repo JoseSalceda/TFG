@@ -1,0 +1,69 @@
+@startuml CU12_Flujo
+
+title CU-12 - Prompt caching controlado en agentes Bedrock
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  DiamondBackgroundColor #FEF3C7
+  DiamondBorderColor #92400E
+  StartColor #16A34A
+  EndColor #16A34A
+}
+skinparam note {
+  BackgroundColor #FFF7ED
+  BorderColor #EA580C
+}
+
+start
+
+partition "Usuario autorizado" {
+  :Seleccionar agente Bedrock;
+  :Solicitar evaluacion de prompt caching;
+}
+
+partition "Backend" {
+  :Leer estado con GetAgent;
+  :Evaluar modelo, region y configuracion;
+}
+
+if ("Agente elegible?") then ("no")
+  :Mostrar motivo de no elegibilidad;
+  stop
+else ("si")
+endif
+
+partition "Simulacion" {
+  :Ejecutar dry-run sin UpdateAgent;
+  :Registrar auditoria de simulacion;
+}
+
+if ("Administrador confirma aplicacion?") then ("no")
+  :Mantener AWS sin cambios;
+  stop
+else ("si")
+endif
+
+if ("Existe promptConfigurations?") then ("no")
+  :Bloquear mutacion real;
+  :Informar prerequisito de prompts avanzados;
+  stop
+else ("si")
+endif
+
+partition "AWS Bedrock" {
+  :UpdateAgent conservando configuracion;
+  :Cambiar solo promptCachingState;
+  :PrepareAgent;
+}
+
+partition "Auditoria y Costs" {
+  :Registrar cambio confirmado;
+  :Mostrar estado final y limitaciones de ahorro;
+}
+
+stop
+
+@enduml

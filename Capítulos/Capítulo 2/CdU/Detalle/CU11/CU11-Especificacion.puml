@@ -1,0 +1,24 @@
+@startuml CU11_Especificacion
+
+title CU-11 - Optimizar recuperacion RAG de agentes Bedrock
+
+start
+:Actor solicita optimizar recuperacion RAG;
+:Sistema presenta agentes candidatos;
+if (Agente con base de conocimiento?) then (si)
+  :Actor proporciona consulta y perfil;
+  :Sistema estima fragmentos y contexto potencial;
+  if (Actor solicita prueba controlada?) then (si)
+    if (Actor administrador?) then (si)
+      :Sistema ejecuta prueba por sesion;
+    else (no)
+      :Sistema mantiene simulacion sin invocar AWS;
+    endif
+  endif
+  :Sistema muestra recomendacion;
+else (no)
+  :Sistema marca la mision como no aplicable;
+endif
+stop
+
+@enduml

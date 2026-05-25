@@ -5,13 +5,13 @@ hide empty description
 
 Autenticado --> PlataformaConfigurada : CU-01 Registrar credenciales AWS\nCU-02 Descubrir agentes\nCU-05 Configurar LLM
 
-PlataformaConfigurada --> VisibilidadActiva : CU-07 Dashboard consolidado
+PlataformaConfigurada --> VisibilidadActiva : CU-07 Coste total en Costs\nCU-08 Coste por agente
 
-VisibilidadActiva --> MonitorizacionActiva : CU-08 Detectar anomalias\nCU-13 Configurar alertas
+VisibilidadActiva --> MonitorizacionActiva : CU-09 Detectar anomalias\nCU-14 Alertas de umbral (futuro)
 
-MonitorizacionActiva --> OptimizacionDisponible : CU-09 Analizar eficiencia\nCU-10 Visibilidad coste LLM\nCU-11 Recomendar optimizacion
+MonitorizacionActiva --> OptimizacionDisponible : CU-10 Coste LLM estimado CAIO\nCU-11 Optimizar RAG\nCU-12 Prompt caching controlado
 
-OptimizacionDisponible --> VisibilidadActiva : Actor Tiempo sincroniza periodicamente
+OptimizacionDisponible --> VisibilidadActiva : Actor Tiempo comprueba periodicamente
 
 OptimizacionDisponible --> [*] : Sesion finalizada
 

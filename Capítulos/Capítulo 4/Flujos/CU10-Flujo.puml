@@ -1,0 +1,52 @@
+@startuml CU10_Flujo
+
+title CU-10 - Coste LLM estimado del CAIO Virtual
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  DiamondBackgroundColor #FEF3C7
+  DiamondBorderColor #92400E
+  StartColor #16A34A
+  EndColor #16A34A
+}
+skinparam note {
+  BackgroundColor #FFF7ED
+  BorderColor #EA580C
+}
+
+start
+
+partition "Plataforma" {
+  :Registrar llamadas a LLM;
+  :Guardar proveedor, modelo, tokens y cost_usd;
+}
+
+partition "Usuario" {
+  :Abrir Misiones FinOps o Costs;
+  :Solicitar coste LLM estimado;
+}
+
+partition "Backend" {
+  :Consultar llm_usage_logs;
+  :Filtrar por organizacion y periodo;
+  :Agrupar por fuente, proveedor, modelo y dia;
+  :Sumar coste estimado almacenado;
+}
+
+note right
+  CU-10 es observabilidad interna.
+  No sustituye la factura oficial.
+end note
+
+partition "Costs" {
+  :Consultar GET /api/v1/llm/costs;
+  :Mostrar llamadas, tokens y coste estimado;
+  :Marcar resultado como estimated = true;
+}
+
+stop
+
+@enduml

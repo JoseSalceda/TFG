@@ -1,0 +1,33 @@
+@startuml CU12_Colaboracion
+
+title CU-12 - Colaboracion MVC
+
+allowmixing
+
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor<<Vista>> #EAF2FF
+  BorderColor<<Vista>> #2F6FED
+  BackgroundColor<<Controlador>> #EEF8EA
+  BorderColor<<Controlador>> #4F8A3D
+  BackgroundColor<<Modelo>> #FFF4E5
+  BorderColor<<Modelo>> #C77C1A
+}
+
+actor "Administrador / CAIO Virtual" as Actor
+class "Vista de Optimizacion" as Vista <<Vista>>
+class "Controlador de Prompt Caching" as Ctrl <<Controlador>>
+class "Agente de IA" as Agente <<Modelo>>
+class "Registro de Auditoria" as Audit <<Modelo>>
+
+Actor --> Vista : solicita evaluar caching
+Vista --> Ctrl : pide elegibilidad y simulacion
+Ctrl --> Agente : revisa compatibilidad
+Ctrl --> Vista : devuelve simulacion previa
+Actor --> Vista : confirma si procede
+Vista --> Ctrl : solicita aplicacion condicionada
+Ctrl --> Agente : aplica solo si es compatible
+Ctrl --> Audit : registra resultado
+Ctrl --> Vista : devuelve estado final o bloqueo
+
+@enduml

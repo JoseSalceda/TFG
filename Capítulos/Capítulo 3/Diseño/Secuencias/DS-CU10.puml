@@ -1,0 +1,30 @@
+@startuml DS-CU10
+
+title Secuencia - CU-10 Coste LLM estimado del CAIO Virtual
+
+actor Usuario
+participant "Frontend /costs" as UI
+participant "Hook useLLMCosts" as Hooks
+participant "LLM API" as API
+participant "LLMCostService" as Service
+participant "LLMUsageLogRepository" as Repo
+database "llm_usage_logs" as DB
+
+Usuario -> UI : abre mision o pagina /costs
+UI -> Hooks : solicita coste LLM estimado
+Hooks -> API : GET /api/v1/llm/costs
+API -> Service : agregar uso LLM del periodo efectivo
+Service -> Repo : consultar registros por organizacion
+Repo -> DB : SELECT
+DB --> Repo : LLMUsageLog[]
+Service --> API : resumen estimado y desgloses
+API --> Hooks : JSON estimated=true
+Hooks --> UI : datos disponibles
+
+alt Hay registros LLM
+  UI --> Usuario : muestra coste estimado, tokens y desglose
+else Sin registros
+  UI --> Usuario : muestra estado vacio y cobertura
+end
+
+@enduml

@@ -1,0 +1,65 @@
+@startuml CU11_Flujo
+
+title CU-11 - Optimizar recuperacion RAG de agentes Bedrock
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  DiamondBackgroundColor #FEF3C7
+  DiamondBorderColor #92400E
+  StartColor #16A34A
+  EndColor #16A34A
+}
+skinparam note {
+  BackgroundColor #FFF7ED
+  BorderColor #EA580C
+}
+
+start
+
+partition "Usuario" {
+  :Seleccionar agente Bedrock;
+  :Introducir consulta y perfil RAG;
+}
+
+partition "Backend" {
+  :Cargar agente de la organizacion;
+  :Consultar Knowledge Bases asociadas;
+}
+
+if ("Hay Knowledge Base?") then ("no")
+  :Marcar resultado no aplicable;
+  stop
+else ("si")
+endif
+
+partition "Simulacion RAG" {
+  :Clasificar consulta;
+  :Elegir perfil de recuperacion;
+  :Calcular numberOfResults;
+  :Construir knowledgeBaseConfigurations;
+}
+
+note right
+  La simulacion no modifica AWS.
+  La prueba usa configuracion por peticion.
+end note
+
+if ("Administrador solicita prueba?") then ("si")
+  partition "AWS Bedrock" {
+    :InvokeAgent con sessionState;
+    :Devolver respuesta y citas;
+  }
+else ("no")
+endif
+
+partition "Costs" {
+  :Mostrar reduccion estimada de contexto;
+  :Mostrar decision RAG aplicada;
+}
+
+stop
+
+@enduml

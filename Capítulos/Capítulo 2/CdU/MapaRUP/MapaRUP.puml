@@ -1,0 +1,44 @@
+@startuml MapaRUP
+
+title Mapa visual de avance RUP - Misiones FinOps
+
+skinparam shadowing false
+skinparam rectangle {
+  RoundCorner 8
+  BorderColor #334155
+  FontSize 12
+}
+
+rectangle "Disciplina de requisitos\nCapitulo 2" as Req #EAF2FF
+rectangle "Prototipo conceptual\nVista de costes" as Proto #EAF2FF
+rectangle "Analisis MVC\nVista - Controlador - Modelo" as Ana #EEF8EA
+rectangle "Diseno tecnico\nArquitectura, datos y secuencias" as Dis #FFF4E5
+rectangle "Implementacion y evidencia\nCapitulo 4" as Impl #F3E8FF
+rectangle "Conclusiones\nCapitulo 5" as Con #F8FAFC
+
+Req --> Proto
+Proto --> Ana
+Ana --> Dis
+Dis --> Impl
+Impl --> Con
+
+rectangle "CU-07\nCoste total" as CU07 #FFFFFF
+rectangle "CU-08\nCoste por agente" as CU08 #FFFFFF
+rectangle "CU-09\nAnomalias" as CU09 #FFFFFF
+rectangle "CU-10\nCoste LLM estimado" as CU10 #FFFFFF
+rectangle "CU-11\nOptimizacion RAG" as CU11 #FFFFFF
+rectangle "CU-12\nPrompt caching" as CU12 #FFFFFF
+
+Req -down-> CU07
+Req -down-> CU08
+Req -down-> CU09
+Req -down-> CU10
+Req -down-> CU11
+Req -down-> CU12
+
+note right of CU12
+CU-13 a CU-16 quedan como evolucion futura,
+no como funcionalidad disponible.
+end note
+
+@enduml

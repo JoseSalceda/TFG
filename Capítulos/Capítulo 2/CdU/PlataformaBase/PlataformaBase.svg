@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <defs>
+    <style>
+      .bg{fill:#ffffff}.frame{fill:#f8fafc;stroke:#334155;stroke-width:2}.actor{fill:#e0f2fe;stroke:#0369a1;stroke-width:1.5}.actor2{fill:#ecfdf5;stroke:#047857;stroke-width:1.5}.uc{fill:#ffffff;stroke:#475569;stroke-width:1.5}.txt{font-family:Arial,Helvetica,sans-serif;fill:#0f172a}.small{font-size:18px}.label{font-size:20px;font-weight:700}.title{font-size:30px;font-weight:700}.sub{font-size:17px;fill:#475569}.line{stroke:#64748b;stroke-width:2;fill:none}
+    </style>
+  </defs>
+  <rect class="bg" width="1280" height="760"/>
+  <text class="txt title" x="640" y="48" text-anchor="middle">Entorno Plataforma Base (Theia Craft)</text>
+  <text class="txt sub" x="640" y="78" text-anchor="middle">Capacidades preexistentes que soportan las nuevas misiones FinOps</text>
+  <rect class="frame" x="265" y="115" width="750" height="560" rx="18"/>
+  <text class="txt label" x="640" y="150" text-anchor="middle">Plataforma Base</text>
+  <g class="txt small">
+    <rect class="actor" x="45" y="150" width="160" height="58" rx="10"/><text x="125" y="185" text-anchor="middle">Administrador</text>
+    <rect class="actor" x="45" y="310" width="160" height="58" rx="10"/><text x="125" y="345" text-anchor="middle">Usuario Regular</text>
+    <rect class="actor2" x="1075" y="210" width="160" height="58" rx="10"/><text x="1155" y="245" text-anchor="middle">Actor Tiempo</text>
+    <rect class="actor2" x="1075" y="430" width="160" height="58" rx="10"/><text x="1155" y="465" text-anchor="middle">CAIO Virtual</text>
+  </g>
+  <g class="txt small">
+    <rect class="uc" x="330" y="195" width="260" height="76" rx="38"/><text x="460" y="225" text-anchor="middle">CU-01</text><text x="460" y="250" text-anchor="middle">Registrar credenciales AWS</text>
+    <rect class="uc" x="690" y="195" width="260" height="76" rx="38"/><text x="820" y="225" text-anchor="middle">CU-02</text><text x="820" y="250" text-anchor="middle">Descubrir agentes en AWS</text>
+    <rect class="uc" x="330" y="325" width="260" height="76" rx="38"/><text x="460" y="355" text-anchor="middle">CU-03</text><text x="460" y="380" text-anchor="middle">Gestionar permisos IAM</text>
+    <rect class="uc" x="690" y="325" width="260" height="76" rx="38"/><text x="820" y="355" text-anchor="middle">CU-04</text><text x="820" y="380" text-anchor="middle">Autenticarse en plataforma</text>
+    <rect class="uc" x="330" y="455" width="260" height="76" rx="38"/><text x="460" y="485" text-anchor="middle">CU-05</text><text x="460" y="510" text-anchor="middle">Configurar proveedor LLM</text>
+    <rect class="uc" x="690" y="455" width="260" height="76" rx="38"/><text x="820" y="485" text-anchor="middle">CU-06</text><text x="820" y="510" text-anchor="middle">Auditoria de actividad</text>
+  </g>
+  <path class="line" d="M205 179 C250 180 280 205 330 225"/>
+  <path class="line" d="M205 179 C360 170 535 185 690 225"/>
+  <path class="line" d="M205 179 C250 300 280 340 330 363"/>
+  <path class="line" d="M205 339 C410 335 520 340 690 363"/>
+  <path class="line" d="M205 179 C250 445 290 480 330 493"/>
+  <path class="line" d="M1235 239 C1120 225 1050 220 950 233"/>
+  <path class="line" d="M1235 459 C1085 455 1010 465 950 493"/>
+  <path class="line" d="M1075 459 C880 420 650 380 590 363"/>
+  <text class="txt sub" x="640" y="710" text-anchor="middle">Los CU-01 a CU-06 son dependencias de la plataforma y no constituyen la aportacion principal del TFG.</text>
+</svg>

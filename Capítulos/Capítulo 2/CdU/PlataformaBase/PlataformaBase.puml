@@ -1,0 +1,25 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+actor Administrador
+actor "Usuario Regular" as Usuario
+actor "Actor Tiempo" as Tiempo
+actor "CAIO Virtual" as CAIO
+rectangle "Plataforma Base (Theia Craft)" {
+  usecase "CU-01\nRegistrar credenciales AWS" as CU01
+  usecase "CU-02\nDescubrir agentes en AWS" as CU02
+  usecase "CU-03\nGestionar permisos IAM" as CU03
+  usecase "CU-04\nAutenticarse en la plataforma" as CU04
+  usecase "CU-05\nConfigurar proveedor LLM" as CU05
+  usecase "CU-06\nAuditoria de actividad" as CU06
+}
+Administrador --> CU01
+Administrador --> CU02
+Administrador --> CU05
+Administrador --> CU06
+Usuario --> CU04
+Administrador --> CU04
+Tiempo --> CU02
+CAIO --> CU03
+CAIO --> CU06
+@enduml

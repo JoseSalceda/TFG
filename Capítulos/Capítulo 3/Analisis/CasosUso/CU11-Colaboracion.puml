@@ -1,0 +1,30 @@
+@startuml CU11_Colaboracion
+
+title CU-11 - Colaboracion MVC
+
+allowmixing
+
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor<<Vista>> #EAF2FF
+  BorderColor<<Vista>> #2F6FED
+  BackgroundColor<<Controlador>> #EEF8EA
+  BorderColor<<Controlador>> #4F8A3D
+  BackgroundColor<<Modelo>> #FFF4E5
+  BorderColor<<Modelo>> #C77C1A
+}
+
+actor "Administrador / CAIO Virtual" as Actor
+class "Vista de Optimizacion" as Vista <<Vista>>
+class "Controlador de Optimizacion RAG" as Ctrl <<Controlador>>
+class "Agente de IA" as Agente <<Modelo>>
+class "Base de Conocimiento" as KB <<Modelo>>
+
+Actor --> Vista : selecciona agente y consulta
+Vista --> Ctrl : solicita perfil de recuperacion
+Ctrl --> Agente : comprueba agente candidato
+Ctrl --> KB : comprueba base de conocimiento
+Ctrl --> Vista : devuelve recomendacion o prueba controlada
+Vista --> Actor : presenta fragmentos y contexto potencial
+
+@enduml

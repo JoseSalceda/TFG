@@ -1,0 +1,30 @@
+@startuml CU08_Colaboracion
+
+title CU-08 - Colaboracion MVC
+
+allowmixing
+
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor<<Vista>> #EAF2FF
+  BorderColor<<Vista>> #2F6FED
+  BackgroundColor<<Controlador>> #EEF8EA
+  BorderColor<<Controlador>> #4F8A3D
+  BackgroundColor<<Modelo>> #FFF4E5
+  BorderColor<<Modelo>> #C77C1A
+}
+
+actor "Administrador / Usuario Regular" as Usuario
+class "Vista de Costes" as Vista <<Vista>>
+class "Controlador de Atribucion" as Ctrl <<Controlador>>
+class "Agente de IA" as Agente <<Modelo>>
+class "Dato de Facturacion" as Fact <<Modelo>>
+
+Usuario --> Vista : solicita coste por agente
+Vista --> Ctrl : pide ranking y no asociado
+Ctrl --> Agente : consulta agentes conocidos
+Ctrl --> Fact : separa atribuido y no asociado
+Ctrl --> Vista : devuelve ranking
+Vista --> Usuario : presenta agentes y coste no asociado
+
+@enduml

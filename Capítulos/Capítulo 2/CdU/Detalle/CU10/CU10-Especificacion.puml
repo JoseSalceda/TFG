@@ -1,0 +1,16 @@
+@startuml CU10_Especificacion
+
+title CU-10 - Coste LLM estimado del CAIO Virtual
+
+start
+:Actor solicita coste LLM estimado;
+if (Existen registros de uso?) then (si)
+  :Sistema agrega llamadas, tokens y coste estimado;
+  :Sistema muestra desglose por fuente, proveedor y modelo;
+  :Sistema marca el resultado como estimacion;
+else (no)
+  :Sistema muestra estado sin uso registrado;
+endif
+stop
+
+@enduml

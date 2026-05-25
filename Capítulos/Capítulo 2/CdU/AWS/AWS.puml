@@ -9,7 +9,20 @@ rectangle "Plataforma base (Theia Craft)" {
   usecase "CU-03\nGestionar permisos IAM" as CU03
 }
 
+rectangle "Misiones FinOps (TFG)" {
+  usecase "CU-07\nConsultar Cost Explorer" as CU07
+  usecase "CU-08\nLeer atribucion de coste" as CU08
+  usecase "CU-09\nLeer senal opcional de anomalias" as CU09
+  usecase "CU-11\nInvocar agente con RAG" as CU11
+  usecase "CU-12\nActualizar prompt caching" as CU12
+}
+
 AWS --> CU02
 AWS --> CU03
+AWS --> CU07
+AWS --> CU08
+AWS --> CU09
+AWS --> CU11
+AWS --> CU12
 
 @enduml

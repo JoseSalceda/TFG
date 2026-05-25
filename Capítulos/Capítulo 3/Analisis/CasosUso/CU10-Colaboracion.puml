@@ -1,0 +1,28 @@
+@startuml CU10_Colaboracion
+
+title CU-10 - Colaboracion MVC
+
+allowmixing
+
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor<<Vista>> #EAF2FF
+  BorderColor<<Vista>> #2F6FED
+  BackgroundColor<<Controlador>> #EEF8EA
+  BorderColor<<Controlador>> #4F8A3D
+  BackgroundColor<<Modelo>> #FFF4E5
+  BorderColor<<Modelo>> #C77C1A
+}
+
+actor "Administrador / Usuario Regular" as Usuario
+class "Vista de Costes" as Vista <<Vista>>
+class "Controlador de Observabilidad LLM" as Ctrl <<Controlador>>
+class "Registro de Uso LLM" as Uso <<Modelo>>
+
+Usuario --> Vista : solicita coste LLM estimado
+Vista --> Ctrl : pide agregacion del periodo
+Ctrl --> Uso : agrega llamadas y tokens
+Ctrl --> Vista : devuelve coste estimado
+Vista --> Usuario : presenta estimacion y desglose
+
+@enduml

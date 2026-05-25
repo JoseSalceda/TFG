@@ -1,0 +1,45 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+actor Administrador
+actor "Usuario Regular" as Usuario
+actor "Actor Tiempo" as Tiempo
+actor "CAIO Virtual" as CAIO
+actor AWS
+rectangle "Nuevas Misiones FinOps (TFG)" {
+  package "Must - visibilidad" {
+    usecase "CU-07\nConsultar coste total IA" as CU07
+    usecase "CU-08\nConsultar coste por agente" as CU08
+    usecase "CU-09\nDetectar anomalías" as CU09
+  }
+  package "Should - optimización" {
+    usecase "CU-10\nCoste LLM estimado" as CU10
+    usecase "CU-11\nOptimizar RAG Bedrock" as CU11
+    usecase "CU-12\nPrompt caching controlado" as CU12
+  }
+  package "Could / Won't - evolución" {
+    usecase "CU-13\nProyectar tendencia" as CU13
+    usecase "CU-14\nConfigurar alertas" as CU14
+    usecase "CU-15\nInforme consumo IA" as CU15
+    usecase "CU-16\nConsolidar agentes" as CU16
+  }
+}
+Administrador --> CU07
+Administrador --> CU08
+Administrador --> CU09
+Administrador --> CU10
+Administrador --> CU11
+Administrador --> CU12
+Usuario --> CU07
+Usuario --> CU08
+Usuario --> CU10
+Usuario --> CU11
+Usuario --> CU12
+Tiempo --> CU09
+CAIO --> CU09
+CAIO --> CU16
+AWS --> CU07
+AWS --> CU08
+AWS --> CU11
+AWS --> CU12
+@enduml

@@ -1,0 +1,17 @@
+@startuml CU08_Especificacion
+
+title CU-08 - Consultar coste por agente de IA en AWS
+
+start
+:Actor solicita coste por agente;
+:Sistema comprueba costes previos;
+if (Existe senal de atribucion visible?) then (si)
+  :Sistema agrupa coste por agente;
+  :Sistema muestra ranking;
+else (no)
+  :Sistema conserva importe como no asociado;
+endif
+:Sistema muestra coste no asociado;
+stop
+
+@enduml

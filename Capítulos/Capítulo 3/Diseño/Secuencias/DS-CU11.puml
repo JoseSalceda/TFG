@@ -1,0 +1,38 @@
+@startuml DS-CU11
+title DS-CU11 - Optimizar recuperacion RAG de agentes Bedrock
+
+actor "Usuario autorizado" as Usuario
+actor Administrador
+participant "Frontend /costs" as FE
+participant "Agents API" as API
+participant "BedrockAgentOptimizationService" as Service
+database "Agent" as Agent
+participant "AWS Bedrock Agents" as AWS
+
+Usuario -> FE : Selecciona agente, query y perfil RAG
+FE -> API : GET /api/v1/agents/{agent_id}/rag-optimization
+API -> Service : get_rag_status(agent_id, org)
+Service -> Agent : cargar agente de la organizacion
+Service -> AWS : ListAgentKnowledgeBases / GetAgentKnowledgeBase
+AWS --> Service : Knowledge Bases asociadas
+Service --> API : aplicabilidad y perfil base
+API --> FE : estado CU-11
+
+Usuario -> FE : Simular perfil
+FE -> API : POST /api/v1/agents/{agent_id}/rag-optimization/simulate
+API -> Service : simulate_rag(query, profile)
+Service -> Service : clasificar consulta y decidir numberOfResults
+Service --> API : decision estimada
+API --> FE : chunks, reduccion estimada y notas
+
+opt prueba real controlada
+  Administrador -> FE : Ejecutar test invoke
+  FE -> API : POST /api/v1/agents/{agent_id}/rag-optimization/test-invoke
+  API -> Service : test_invoke_rag(...)
+  Service -> AWS : InvokeAgent con sessionState.knowledgeBaseConfigurations
+  AWS --> Service : respuesta o error AWS
+  Service --> API : resultado explicable
+  API --> FE : respuesta, decision y limitaciones
+end
+
+@enduml

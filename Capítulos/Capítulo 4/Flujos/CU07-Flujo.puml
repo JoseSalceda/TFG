@@ -1,0 +1,77 @@
+@startuml CU07_Flujo
+
+title CU-07 - Consultar coste total de IA en AWS
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  DiamondBackgroundColor #FEF3C7
+  DiamondBorderColor #92400E
+  StartColor #16A34A
+  EndColor #16A34A
+}
+skinparam note {
+  BackgroundColor #FFF7ED
+  BorderColor #EA580C
+}
+
+start
+
+partition "Usuario" {
+  :Abrir Misiones -> FinOps;
+  :Seleccionar CU-07;
+}
+
+partition "Plataforma" {
+  :Verificar credenciales AWS;
+  :Comprobar acceso a Cost Explorer;
+}
+
+if ("Cost Explorer accesible?") then ("no")
+  :Informar permisos necesarios;
+  stop
+else ("si")
+endif
+
+partition "Backend" {
+  :Leer datos de billing disponibles;
+}
+
+if ("Hace falta refrescar datos?") then ("si")
+  partition "Administrador" {
+    :Ejecutar POST /api/v1/billing/sync;
+  }
+  partition "Backend" {
+    :Sincronizar costes AWS;
+    :Consultar Amazon Bedrock en Cost Explorer;
+    :Normalizar registros diarios;
+    :Guardar datos en billing_data;
+  }
+else ("no")
+endif
+
+partition "Backend" {
+  :Usar registros disponibles en billing_data;
+}
+
+note right
+  CU-07 suma todo el coste Bedrock.
+  No depende de atribucion por agente.
+end note
+
+partition "Costs" {
+  :Consultar GET /api/v1/billing/total;
+  :Mostrar coste total, moneda y periodo;
+  :Mostrar fecha de ultima actualizacion;
+}
+
+partition "Usuario" {
+  :Revisar el coste total;
+  :Completar la mision;
+}
+
+stop
+
+@enduml

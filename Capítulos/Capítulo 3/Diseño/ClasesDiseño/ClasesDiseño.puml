@@ -7,63 +7,80 @@ title Clases de diseno - Modulo FinOps
 
 package "API" {
   class BillingRouter {
-    +GET /billing/status
-    +GET /billing/costs/*
-    +POST /billing/sync
+    +GET /api/v1/billing/status
+    +GET /api/v1/billing/costs
+    +GET /api/v1/billing/total
+    +GET /api/v1/billing/agents
+    +GET /api/v1/billing/dashboard
+    +GET /api/v1/billing/anomalies
+    +POST /api/v1/billing/anomalies/run
+    +POST /api/v1/billing/sync
   }
 }
 
 package "Servicios" {
   class BillingService {
-    +agregarCostes()
-    +sincronizar()
+    +get_status()
+    +get_costs()
+    +get_total()
+    +get_agent_costs()
+    +get_anomalies()
+    +run_anomaly_check()
+    +sync()
   }
 
   class AWSBillingService {
-    +leerCostExplorer()
+    +fetch_costs()
+    +fetch_anomalies()
   }
 
-  class LLMService {
-    +generarInsight()
-  }
 }
 
 package "Persistencia" {
   class BillingRepository {
-    +buscarPorPeriodo()
-    +updateOrInsert()
+    +get_by_period()
+    +upsert_cost()
   }
 
   class BillingData {
     organizationId
     provider
     resourceId
+    agentId nullable
     period
     cost
+    serviceName
   }
 
   class Agent
+  class BillingAnomalyRun
   class AuditLog
 }
 
 package "Schemas" {
   class BillingStatusResponse
   class BillingCostSummary
-  class BillingInsightsResponse
+  class BillingTotalResponse
+  class BillingAgentsResponse
+  class BillingAnomalyResponse
+  class BillingAnomalyRunResponse
 }
 
 BillingRouter --> BillingService
-BillingRouter --> LLMService : insights
 BillingRouter --> BillingStatusResponse
 BillingRouter --> BillingCostSummary
-BillingRouter --> BillingInsightsResponse
+BillingRouter --> BillingTotalResponse
+BillingRouter --> BillingAgentsResponse
+BillingRouter --> BillingAnomalyResponse
+BillingRouter --> BillingAnomalyRunResponse
 
 BillingService --> BillingRepository
 BillingService --> AWSBillingService : sincronizacion
 BillingService --> Agent : matching
+BillingService --> BillingAnomalyRun : idempotencia CU-09
 BillingService --> AuditLog : auditoria
 
 BillingRepository --> BillingData
-BillingData --> Agent : agente opcional
+BillingData --> Agent : agent_id opcional
 
 @enduml

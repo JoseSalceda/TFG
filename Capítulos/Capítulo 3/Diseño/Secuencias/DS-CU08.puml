@@ -1,0 +1,33 @@
+@startuml DS-CU08
+
+title Secuencia - CU-08 Coste por agente de IA en AWS
+
+actor Usuario
+participant "Frontend /costs" as UI
+participant "Hook useBillingAgents" as Hooks
+participant "Billing API" as API
+participant "BillingService" as Service
+participant "BillingRepository" as Repo
+participant "AgentRepository" as Agents
+database "billing_data" as DB
+
+Usuario -> UI : revisa preparacion AWS
+UI -> Hooks : solicita coste por agente
+Hooks -> API : GET /api/v1/billing/agents
+API -> Service : calcular costes atribuidos
+Service -> Repo : consultar periodo efectivo
+Repo -> DB : SELECT
+DB --> Repo : registros Bedrock
+Service -> Agents : resolver metadatos de agentes
+Agents --> Service : nombres, modelos y estado
+Service --> API : by_agent y unmatched_cost
+API --> Hooks : JSON
+Hooks --> UI : datos disponibles
+
+alt Hay agentes con coste atribuido
+  UI --> Usuario : muestra ranking por agente
+else Solo coste no asociado
+  UI --> Usuario : muestra coste no asociado y condicion de atribucion
+end
+
+@enduml
